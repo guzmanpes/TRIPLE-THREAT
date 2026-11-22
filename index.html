@@ -248,7 +248,24 @@ function drawPixelHero(p){
  const width=Math.max(...spr.rows.map(r=>r.length));
  const px=-Math.floor(width*cell/2),py=-112;
  const R=(a,b,c,d,col)=>{ctx.fillStyle=col;ctx.fillRect(a,b,c,d)};
+ const grid=spr.rows.map(line=>line.padEnd(width,'.').split(''));
+ // Give Jack and Zip the bold one-pixel ink outline of classic arcade sprites.
+ // Pixel stays exactly as the approved reference design.
+ if(p.charId!=='pixel'){
+  const ink='#171a2c';
+  for(let row=0;row<grid.length;row++)for(let col=0;col<width;col++){
+   if(grid[row][col]==='.')continue;
+   for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1]]){
+    const nx=col+dx,ny=row+dy;
+    if(nx>=0&&nx<width&&ny>=0&&ny<grid.length&&grid[ny][nx]==='.')R(px+nx*cell,py+ny*cell,cell,cell,ink);
+   }
+  }
+ }
+ // Two-tone pixel shadow under the feet keeps the characters grounded.
  spr.rows.forEach((line,row)=>{const left=px+Math.floor((width-line.length)*cell/2);for(let col=0;col<line.length;col++){const token=line[col];if(token==='.')continue;R(left+col*cell,py+row*cell,cell,cell,spr.colors[token]||'#111');}});
+ // Small hard-edged highlight pixels, not gradients or soft shading.
+ if(p.charId==='jack'){R(-10,-83,10,5,'#f39a3b');R(-5,-79,5,5,'#ffd45b');}
+ if(p.charId==='zip'){R(-10,-73,10,5,'#42d8ef');R(5,-68,5,5,'#6deaff');}
  // Character signature item, kept deliberately blocky.
  if(p.charId==='jack'){R(39,-107,8,42,'#6b3d2c');R(33,-113,24,12,'#9baabd');R(31,-116,28,5,'#e6edf5');}
  if(p.charId==='zip'){R(-45,-91,12,16,'#f5e85b');R(-48,-80,15,8,'#22b9df');R(-39,-96,6,4,'#fff5a0');}
