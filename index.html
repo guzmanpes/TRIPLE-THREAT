@@ -146,7 +146,7 @@ function hostUpdate(){
   for(const e of enemies){if(e.hp>0&&Math.abs(p.x-e.x)<range&&Math.abs(p.lane-e.lane)<.18&&((p.dir>0&&e.x>=p.x-5)||(p.dir<0&&e.x<=p.x+5))&&e.hit===0){e.hp-=damage;e.hit=16;p.score+=100;score+=100;if(e.hp<=0)score+=250;shake=Math.max(shake,2)}}
   if(boss&&boss.hp>0&&Math.abs(p.x-boss.x)<range+18&&Math.abs(p.lane-boss.lane)<.22&&((p.dir>0&&boss.x>=p.x-5)||(p.dir<0&&boss.x<=p.x+5))&&boss.hit===0){boss.hp-=damage;boss.hit=13;p.score+=150;score+=150;shake=Math.max(shake,3);if(boss.hp<=0){boss.hp=0;stageWon=true;showBanner('PAPERWORK COMPLETE!','THE MANAGER HAS BEEN ESCALATED TO HR.',260)}}
  }
- enemies.forEach(e=>{if(e.hit>0)e.hit--});enemies=enemies.filter(e=>e.hp>0);
+ enemies.forEach(e=>{if(e.hit>0)e.hit--});if(boss&&boss.hit>0)boss.hit--;enemies=enemies.filter(e=>e.hp>0);
  if(enemies.length===0&&!boss&&!stageWon){
   waveClock++;
   if(waveClock>85){waveClock=0;if(stageWave<downtownWaves.length-1){stageWave++;spawnWave(stageWave)}else spawnManager()}
