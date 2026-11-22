@@ -92,3 +92,13 @@ This specification is the target. Prototype features should be described as impl
 - Updated the game frame, scanline treatment, menu panels, and hero-selection cards to reinforce the retro arcade cabinet direction.
 - JavaScript syntax validation passed after the visual changes.
 - Still unverified: actual Safari rendering on an iPhone, performance on older devices, and three-phone multiplayer playtesting. Art is still procedurally drawn in Canvas rather than final authored sprite sheets.
+
+## Vertical slice expansion — Subway of Doom
+
+- Added a second playable campaign stage that unlocks after defeating The Manager. The host taps the game field (or presses Enter) on the Downtown clear screen to board the train; the stage change is synchronized through host snapshots to connected players.
+- Added a dedicated subway station environment with route signage, platform edge, track pit, station lighting, and tunnel.
+- Added three Subway enemy waves using commuter security, ticket bots, and transit drones.
+- Added The Conductor as the Subway boss, with a distinct transit-official pixel-art silhouette and boss health bar.
+- Added a repeating train hazard with an approach warning, moving train, collision damage, and jump-to-evade behavior.
+- Added Subway clear and campaign-demo-complete states. Stages 3–5 are not implemented yet.
+- JavaScript syntax validation passed. This update has not been tested on physical iPhones or with three simultaneous devices; multiplayer synchronization is implemented in snapshots but remains unverified in live play.
