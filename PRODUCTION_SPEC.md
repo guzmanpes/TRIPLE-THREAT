@@ -83,3 +83,12 @@ This specification is the target. Prototype features should be described as impl
 - Implemented art is procedural canvas placeholder art. Final authored sprite sheets, background art, music and sound effects remain production tasks.
 - Multiplayer state snapshots include wave, boss, banner, and clear-state information.
 - JavaScript syntax has been checked. Real-device gameplay, three-phone synchronization, combat balance, and full stage completion remain unverified.
+
+## Visual pass — Downtown arcade presentation
+
+- Reworked the three playable heroes with layered pixel-art silhouettes, face details, clothing highlights, signature gear, health pips, stride animation, and attack/special effects.
+- Rebuilt NEXUS patrol, ticket-bot, manager, and boss artwork with clearer silhouettes, suit/armor details, hit flashes, and attack wind-up telegraphs.
+- Replaced the basic Downtown skyline with a layered sunset cityscape, NEXUS tower signage, lit windows, street furniture, sidewalk and road markings.
+- Updated the game frame, scanline treatment, menu panels, and hero-selection cards to reinforce the retro arcade cabinet direction.
+- JavaScript syntax validation passed after the visual changes.
+- Still unverified: actual Safari rendering on an iPhone, performance on older devices, and three-phone multiplayer playtesting. Art is still procedurally drawn in Canvas rather than final authored sprite sheets.
