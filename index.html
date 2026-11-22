@@ -216,18 +216,34 @@ function drawPixelHero(p){
  // Compact 8-bit sprites: one-pixel outlines, chunky color blocks, no gradients.
  const sprites={
  jack:{
-  rows:["......HHHH......",".....HHHHHH.....",".....HHHHHH.....",".....SSSSSS.....","....SSSSSSSS....","....SSEESSSS....","....SSSSSSSS....",".....SSSSSS.....","...OOOOOOOOOO...","...OOOYYYYOOO...","...OOOOOOOOOO...","....OOOYYOOO....","....DDDDDDDD....","....DDDDDDDD....","....DDD..DDD....","....DDD..DDD....","...BBBB..BBBB...","...BBBB..BBBB...","...BBBB..BBBB..."],
+  rows:[
+   "......HHHH......",".....HHHHHH.....","....HHHHHHHH....",
+   "....SSSSSSSS....","...SSSSSSSSSS...","...SSEESSEESS...",
+   "...SSSSSSSSSS...","....SSSSSSSS....","..OOOOOOOOOOOO..",
+   "..OOOYYYYYYOOO..","..OOOOOOOOOOOO..","...OOOYYYYOOO...",
+   "...DDDDDDDDDD...","...DDDDDDDDDD...","....DDD..DDD....",
+   "....DDD..DDD....","...BBBB..BBBB...","...BBBB..BBBB...",
+   "...BBBB..BBBB..."
+  ],
   colors:{H:"#f3a72e",S:"#e6ae82",E:"#25233b",O:"#d96c24",Y:"#ffd45b",D:"#34445d",B:"#18243a"}
  },
  zip:{
-  rows:["......KKKK......",".....KKKKKK.....",".....KKKKKK.....",".....SSSSSS.....","....SSSSSSSS....","....SSEESSSS....","....SSSSSSSS....",".....SSSSSS.....","....CCCCCCCC....","...CCBBBBBBCC...","...CCCCCCCCCC...","....CCCYCCCC....","....BBBBBBBB....","....BBBBBBBB....","....BBB..BBB....","....BBB..BBB....","...WWWW..WWWW...","...WWWW..WWWW...","...YYYY..YYYY..."],
+  rows:[
+   ".....KKKKKK.....","....KKKKKKKK....","...KKKKKKKKKK...",
+   "...SSSSSSSSSS...","..SSSSSSSSSSSS..","..SSEEEEEESS....",
+   "..SSSSSSSSSS....","...SSSSSSSS.....","..CCCCCCCCCCCC..",
+   "..CCBBBBBBBBCC..","..CCCCCCCCCCCC..","...CCCYCCCCCC...",
+   "...BBBBBBBBBB...","...BBBBBBBBBB...","....BBB..BBB....",
+   "....BBB..BBB....","...WWWW..WWWW...","...WWWW..WWWW...",
+   "...YYYY..YYYY..."
+  ],
   colors:{K:"#24243c",S:"#d99a78",E:"#19314b",C:"#22b9df",B:"#17639b",Y:"#f5e85b",W:"#eaf7f6"}
  },
  pixel:{
   rows:[".....PPPPPP.....","....PPPPPPPP....","....PPPPPPPP....","....SSSSSSSS....","...SSSSSSSSSS...","...SSEESSEESS...","...SSSSSSSSSS...","....SSSSSSSS....","..PPPPPPPPPPPP..","..PPPPMMMMPPPP..","..PPPPPPPPPPPP..","...PPPMMMPPP....","...PPPPPPPPPP...","...PPPPPPPPPP...","....PPP..PPP....","....PPP..PPP....","...BBBB..BBBB...","...BBBB..BBBB...","...MMMM..MMMM..."],
   colors:{P:"#7543ac",S:"#e5b89a",E:"#75f4c2",M:"#b99aff",B:"#292744"}
  }
- };
+
  const spr=sprites[p.charId]||sprites.jack,cell=5;
  const width=Math.max(...spr.rows.map(r=>r.length));
  const px=-Math.floor(width*cell/2),py=-112;
