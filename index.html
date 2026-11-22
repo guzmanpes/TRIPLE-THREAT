@@ -243,7 +243,7 @@ function drawPixelHero(p){
   rows:[".....PPPPPP.....","....PPPPPPPP....","....PPPPPPPP....","....SSSSSSSS....","...SSSSSSSSSS...","...SSEESSEESS...","...SSSSSSSSSS...","....SSSSSSSS....","..PPPPPPPPPPPP..","..PPPPMMMMPPPP..","..PPPPPPPPPPPP..","...PPPMMMPPP....","...PPPPPPPPPP...","...PPPPPPPPPP...","....PPP..PPP....","....PPP..PPP....","...BBBB..BBBB...","...BBBB..BBBB...","...MMMM..MMMM..."],
   colors:{P:"#7543ac",S:"#e5b89a",E:"#75f4c2",M:"#b99aff",B:"#292744"}
  }
-
+};
  const spr=sprites[p.charId]||sprites.jack,cell=5;
  const width=Math.max(...spr.rows.map(r=>r.length));
  const px=-Math.floor(width*cell/2),py=-112;
