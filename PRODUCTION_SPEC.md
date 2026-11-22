@@ -76,3 +76,10 @@ Engine, input, player, combat, enemy AI, boss, stage, multiplayer, audio, UI, an
 
 ## Current implementation status
 This specification is the target. Prototype features should be described as implemented only after code is committed and tested. The browser game has not yet been validated on three physical iPhones.
+
+
+## Vertical slice status — Downtown Disaster
+- Implemented in the browser prototype: opening banner, three enemy waves, three enemy archetypes, The Manager boss encounter, boss health bar and attack wind-up, victory / defeat states.
+- Implemented art is procedural canvas placeholder art. Final authored sprite sheets, background art, music and sound effects remain production tasks.
+- Multiplayer state snapshots include wave, boss, banner, and clear-state information.
+- JavaScript syntax has been checked. Real-device gameplay, three-phone synchronization, combat balance, and full stage completion remain unverified.
