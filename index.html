@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#10131e"><title>TRIPLE THREAT — Arcade Beat 'Em Up</title>
+<style>
+:root{--bg:#10131e;--panel:#1b2131;--ink:#f7f4e8;--muted:#aab2c5;--gold:#ffd166;--red:#ff5964;--blue:#55c2ff;--green:#70e0a1}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}
+body{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 15%,#29334d 0,#10131e 65%)}
+#app{width:min(100vw,1100px);height:100dvh;max-height:850px;display:flex;flex-direction:column;padding:clamp(8px,2vw,18px);gap:10px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px}.brand{font-weight:1000;letter-spacing:.12em;font-size:clamp(18px,4vw,28px);color:var(--gold);text-shadow:3px 3px #7c3447}.tag{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:800}
+#status{font-size:12px;color:var(--green);text-align:right}
+#stage{position:relative;flex:1;min-height:220px;border:3px solid #59627a;border-radius:14px;overflow:hidden;background:#182238;box-shadow:0 10px 30px #0008}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+#hud{position:absolute;inset:8px 10px auto;display:flex;justify-content:space-between;pointer-events:none;font-weight:900;font-size:clamp(11px,2vw,15px);text-shadow:2px 2px #111}
+#overlay{position:absolute;inset:0;background:#10131eeF;display:flex;align-items:center;justify-content:center;padding:16px;z-index:4}
+.panel{width:min(100%,480px);background:var(--panel);border:1px solid #59627a;border-radius:18px;padding:clamp(16px,4vw,28px);text-align:center;box-shadow:0 15px 45px #0009}
+h1{margin:0;color:var(--gold);font-size:clamp(26px,7vw,42px);letter-spacing:.06em}h2{margin:6px 0 14px;font-size:15px;color:var(--muted);font-weight:700}
+button,input{font:inherit}button{border:0;border-radius:12px;padding:13px 16px;font-weight:900;letter-spacing:.04em;background:var(--gold);color:#171923;min-height:46px;cursor:pointer}
+button.secondary{background:#39445d;color:white;border:1px solid #68748e}button:disabled{opacity:.4}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid #69748b;background:#101522;color:white;text-align:center;text-transform:uppercase;font-size:18px;font-weight:900;letter-spacing:.16em;margin:8px 0}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.joinrow{display:flex;gap:7px}.joinrow input{min-width:0}.joinrow button{white-space:nowrap}
+.small{font-size:12px;color:var(--muted);line-height:1.45;margin:12px 0 0}.hidden{display:none!important}
+#controls{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:112px;padding:0 4px;user-select:none;-webkit-user-select:none}
+.pad{display:grid;grid-template-columns:54px 54px 54px;grid-template-rows:48px 48px;gap:4px}
+.ctrl{background:#2a344b;color:#fff;border:1px solid #68748e;border-radius:13px;font-size:21px;padding:0;min-height:0;touch-action:none;box-shadow:0 4px 0 #101522}
+.ctrl:active,.ctrl.down{background:#536483;transform:translateY(2px);box-shadow:0 2px 0 #101522}
+#up{grid-column:2}#left{grid-column:1;grid-row:2}#down{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
+#attack{width:100px;height:88px;border-radius:50%;background:var(--red);color:white;border:3px solid #ff9a9f;font-size:15px;box-shadow:0 5px 0 #8e2938}
+#jump{width:66px;height:66px;border-radius:50%;background:var(--blue);color:#0c1a28;font-size:12px;box-shadow:0 5px 0 #1c668e}
+.foot{display:flex;justify-content:space-between;gap:8px;color:#78839b;font-size:10px}
+@media(min-width:700px){#controls{max-width:460px;margin:0 auto;width:100%}.pad{grid-template-columns:62px 62px 62px;grid-template-rows:54px 54px}.ctrl{font-size:24px}#attack{width:110px;height:96px}}
+</style>
+</head>
+<body><main id="app">
+<header><div><div class="brand">TRIPLE THREAT</div><div class="tag">3-PLAYER CO-OP ARCADE BEAT 'EM UP</div></div><div id="status">READY TO PLAY</div></header>
+<section id="stage"><canvas id="game"></canvas><div id="hud"><span id="score">SCORE 000000</span><span id="lives">❤️ ❤️ ❤️</span></div>
+<div id="overlay"><div class="panel" id="menu">
+<h1>TRIPLE THREAT</h1><h2>TEAM UP. THROW DOWN. TAKE BACK THE STREETS.</h2>
+<p class="small">One player hosts. Two friends join with the room code. Works in iPhone Safari.</p>
+<div class="actions"><button id="hostBtn">HOST GAME</button><button id="joinBtn" class="secondary">JOIN GAME</button></div>
+<div id="joinBox" class="hidden"><input id="roomInput" maxlength="6" placeholder="6-LETTER CODE" autocomplete="off"><button id="connectBtn">CONNECT</button></div>
+<p class="small" id="menuNote">Internet is needed to connect players. Once connected, gameplay uses peer-to-peer data channels when available.</p>
+</div></div></section>
+<section id="controls"><div class="pad"><button class="ctrl" id="up">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="down">▼</button><button class="ctrl" id="right">▶</button></div><button id="jump" class="ctrl">JUMP</button><button id="attack" class="ctrl">PUNCH!</button></section>
+<div class="foot"><span>MOVE: ARROWS / WASD</span><span>PUNCH: SPACE · JUMP: J</span><span id="playersLabel">PLAYERS 0/3</span></div>
+</main>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id), canvas=$('game'),ctx=canvas.getContext('2d');
+let W=960,H=540,role='none',peer=null,hostConn=null,connections=[],room='',slot=0,players=[],enemies=[],score=0,frame=0,lastNet=0,gameStarted=false,gameOver=false,shake=0;
+const colors=['#ffcb69','#61c7ff','#ff6b88'];
+const input={left:false,right:false,up:false,down:false,attack:false,jump:false};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function resize(){const r=canvas.getBoundingClientRect();const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.floor(r.width*d);canvas.height=Math.floor(r.height*d);W=canvas.width;H=canvas.height;ctx.setTransform(1,0,0,1,0,0)}
+new ResizeObserver(resize).observe(canvas);resize();
+function setStatus(s){$('status').textContent=s}
+function showMenu(note){$('overlay').classList.remove('hidden');$('menuNote').textContent=note||''}
+function hideMenu(){$('overlay').classList.add('hidden')}
+function makePlayer(id,name,x,color){return{id,name,x,y:0,vx:0,vy:0,hp:3,color,dir:1,attack:0,jump:0,inv:0,score:0,active:true}}
+function newWorld(){players=[makePlayer(0,'PLAYER 1',120,colors[0])];enemies=[];score=0;frame=0;gameOver=false;gameStarted=true;for(let i=0;i<5;i++)spawnEnemy(560+i*100)}
+function spawnEnemy(x){enemies.push({x:x||W*.85,y:0,hp:2,dir:-1,hit:0,phase:Math.random()*8})}
+function playerInput(p,inp){if(!p||!p.active)return;p.vx=0;if(inp.left){p.vx=-3.1;p.dir=-1}if(inp.right){p.vx=3.1;p.dir=1}if(inp.jump&&p.y===0){p.vy=-9.5;p.jump=1}if(inp.attack&&p.attack<=0)p.attack=17}
+function updatePlayer(p){p.x=clamp(p.x+p.vx,35, W/(devicePixelRatio||1)-35);if(p.vy||p.y>0){p.y+=p.vy;p.vy+=.48;if(p.y>0){p.y=0;p.vy=0;p.jump=0}}if(p.attack>0)p.attack--;if(p.inv>0)p.inv--}
+function hostUpdate(){if(!gameStarted||gameOver)return;frame++;players.forEach((p,i)=>{if(p.active){playerInput(p,p._input||{});updatePlayer(p)}});enemies.forEach(e=>{if(e.hp<=0)return;let target=players.filter(p=>p.active).sort((a,b)=>Math.abs(a.x-e.x)-Math.abs(b.x-e.x))[0];if(target){e.dir=target.x<e.x?-1:1;e.x+=e.dir*(1.05+Math.sin(frame/25+e.phase)*.25);if(Math.abs(target.x-e.x)<35&&Math.abs(target.y-e.y)<20&&frame%45===0&&target.inv<=0){target.hp--;target.inv=65;shake=8;if(target.hp<=0){target.active=false;if(players.every(p=>!p.active))gameOver=true}}}});for(const p of players){if(!p.active||p.attack<10)continue;for(const e of enemies){if(e.hp>0&&Math.abs(p.x-e.x)<62&&Math.abs(p.y-e.y)<35){e.hp--;e.hit=12;p.score+=100;score+=100;if(e.hp<=0){score+=150}}}}enemies=enemies.filter(e=>e.hp>0);if(frame%230===0&&enemies.length<9)spawnEnemy(W/(devicePixelRatio||1)+40);if(frame%90===0&&enemies.length===0)for(let i=0;i<4;i++)spawnEnemy(W/(devicePixelRatio||1)+i*65)}
+function snapshot(){return{players:players.map(p=>({...p,_input:undefined})),enemies,score,frame,gameOver}}
+function sendAll(msg){connections.forEach(c=>{if(c.open)c.send(msg)})}
+function hostLoop(){const now=performance.now();if(now-lastNet>65){lastNet=now;sendAll({type:'state',state:snapshot()})}}
+function startHost(){if(!window.Peer){setStatus('NETWORK LIBRARY FAILED');showMenu('Could not load the multiplayer connection library. Check your internet and reload.');return}role='host';slot=0;room=Math.random().toString(36).slice(2,8).toUpperCase();setStatus('STARTING ROOM…');peer=new Peer('tt-'+room.toLowerCase());peer.on('open',()=>{newWorld();hideMenu();setStatus('HOST · ROOM '+room);$('playersLabel').textContent='PLAYERS 1/3';$('menuNote').textContent='Room ready';});peer.on('connection',c=>{if(connections.length>=2){c.on('open',()=>c.send({type:'full'}));setTimeout(()=>c.close(),500);return}c.on('open',()=>{const id=connections.length+1;connections.push(c);players.push(makePlayer(id,'PLAYER '+(id+1),200+id*90,colors[id]));c.send({type:'welcome',slot:id,room});$('playersLabel').textContent='PLAYERS '+players.length+'/3';setStatus('HOST · '+players.length+'/3 PLAYERS');});c.on('data',m=>{if(m.type==='input'){const p=players.find(x=>x.id===m.slot);if(p)p._input=m.input||{}}if(m.type==='leave'){const p=players.find(x=>x.id===m.slot);if(p)p.active=false}});c.on('close',()=>{const i=connections.indexOf(c);if(i>=0){connections.splice(i,1);const p=players.find(x=>x.id===i+1);if(p)p.active=false;$('playersLabel').textContent='PLAYERS '+(connections.length+1)+'/3'}})});peer.on('error',e=>{setStatus('CONNECTION ERROR');showMenu('Could not create the room ('+e.type+'). Try again with a stable internet connection.')})}
+function joinGame(){const code=$('roomInput').value.trim().toUpperCase();if(code.length!==6){$('menuNote').textContent='Enter the 6-letter room code.';return}if(!window.Peer){$('menuNote').textContent='Connection library did not load. Check internet and reload.';return}role='client';room=code;setStatus('CONNECTING…');peer=new Peer();peer.on('open',()=>{hostConn=peer.connect('tt-'+code.toLowerCase(),{reliable:true});hostConn.on('open',()=>{setStatus('CONNECTED · WAITING FOR GAME');hideMenu()});hostConn.on('data',m=>{if(m.type==='welcome'){slot=m.slot;setStatus('PLAYER '+(slot+1)+' · CONNECTED');$('playersLabel').textContent='PLAYERS 3 MAX'}else if(m.type==='state'){players=m.state.players;enemies=m.state.enemies;score=m.state.score;frame=m.state.frame;gameOver=m.state.gameOver;gameStarted=true}else if(m.type==='full'){$('menuNote').textContent='That room already has 3 players.';showMenu()}});hostConn.on('close',()=>{setStatus('HOST DISCONNECTED');showMenu('The host connection ended. Ask them to create a new room.')});hostConn.on('error',()=>{setStatus('CONNECTION FAILED');showMenu('Could not connect. Check the code and make sure all phones have internet access.')})});peer.on('error',e=>{setStatus('CONNECTION ERROR');showMenu('Could not connect ('+e.type+'). Check the room code and try again.')})}
+$('hostBtn').onclick=startHost;$('joinBtn').onclick=()=>{$('joinBox').classList.remove('hidden');$('roomInput').focus()};$('connectBtn').onclick=joinGame;
+function pointerButton(id,key){const el=$(id);const on=e=>{e.preventDefault();input[key]=true;el.classList.add('down');try{el.setPointerCapture(e.pointerId)}catch(_){}};const off=e=>{e.preventDefault();input[key]=false;el.classList.remove('down')};el.addEventListener('pointerdown',on);['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,off))}
+['left','right','up','down','attack','jump'].forEach(k=>pointerButton(k,k));
+const keymap={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down',' ':'attack',j:'jump',J:'jump'};window.addEventListener('keydown',e=>{const k=keymap[e.key];if(k){e.preventDefault();input[k]=true}});window.addEventListener('keyup',e=>{const k=keymap[e.key];if(k){e.preventDefault();input[k]=false}});
+function drawBackground(){const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#243653');sky.addColorStop(1,'#5c5265');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);const scale=W/960;ctx.fillStyle='#1b2940';for(let i=0;i<9;i++){let x=i*125*scale;let h=(130+(i*47)%120)*H/540;ctx.fillRect(x,H*.48-h,90*scale,h);ctx.fillStyle='#ffd16655';for(let y=H*.48-h+14;y<H*.48-8;y+=22)for(let xx=x+12;xx<x+80*scale;xx+=22)ctx.fillRect(xx,y,7*scale,9);ctx.fillStyle='#1b2940'}ctx.fillStyle='#293448';ctx.fillRect(0,H*.58,W,H*.42);ctx.fillStyle='#3c4657';ctx.fillRect(0,H*.7,W,H*.3);ctx.strokeStyle='#657184';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,H*.72);ctx.lineTo(W,H*.72);ctx.stroke();for(let i=0;i<12;i++){let x=(i*137+((frame*.45)%(W+140)))%(W+140)-50;ctx.fillStyle='#ffd166';ctx.fillRect(x,H*.62,30,3);ctx.fillStyle='#10131e';ctx.fillRect(x+5,H*.625,20,3)}}
+function drawFighter(p){const s=W/960,x=p.x/960*W,y=H*.76-p.y/540*H;ctx.save();ctx.translate(x,y);if(p.inv>0&&Math.floor(frame/5)%2===0)ctx.globalAlpha=.35;ctx.fillStyle='#0007';ctx.beginPath();ctx.ellipse(0,7,24,8,0,0,Math.PI*2);ctx.fill();ctx.scale(s,s);ctx.fillStyle=p.color;ctx.fillRect(-13,-62,26,29);ctx.fillStyle='#f2c59b';ctx.fillRect(-10,-82,20,20);ctx.fillStyle='#242332';ctx.fillRect(-11,-85,22,8);ctx.fillStyle='#171c2b';ctx.fillRect(-15,-33,12,29);ctx.fillRect(3,-33,12,29);ctx.fillStyle='#e9eef7';ctx.fillRect(-17,-5,15,6);ctx.fillRect(3,-5,15,6);ctx.fillStyle=p.color;ctx.fillRect(p.dir>0?8:-19,-58,11,25);if(p.attack>0){ctx.fillStyle='#fff1a8';ctx.fillRect(p.dir>0?16:-44,-58,28,12);ctx.fillStyle='#ff5964';ctx.fillRect(p.dir>0?37:-50,-61,10,18)}ctx.fillStyle='#fff';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText(p.name,0,-94);ctx.fillStyle='#111';ctx.fillRect(-16,-91,32,4);ctx.fillStyle='#70e0a1';ctx.fillRect(-16,-91,32*Math.max(0,p.hp)/3,4);ctx.restore()}
+function drawEnemy(e){const x=e.x/960*W,y=H*.76-e.y/540*H;ctx.save();ctx.translate(x,y);ctx.fillStyle='#0007';ctx.beginPath();ctx.ellipse(0,7,22,7,0,0,7);ctx.fill();ctx.fillStyle='#a7a1b5';ctx.fillRect(-13,-59,26,30);ctx.fillStyle='#d8a88e';ctx.fillRect(-10,-78,20,19);ctx.fillStyle='#393246';ctx.fillRect(-12,-81,24,7);ctx.fillStyle='#493d55';ctx.fillRect(-14,-30,11,27);ctx.fillRect(3,-30,11,27);ctx.fillStyle='#d6d0e4';ctx.fillRect(-17,-4,15,6);ctx.fillRect(3,-4,15,6);ctx.fillStyle='#ff5964';ctx.fillRect(-14,-88,28,4);ctx.fillStyle='#111';ctx.fillRect(-14,-88,28*Math.max(0,e.hp)/2,4);ctx.restore()}
+function render(){ctx.clearRect(0,0,W,H);ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake--}drawBackground();if(role==='host'){players.forEach(drawFighter);enemies.forEach(e=>{if(e.hp>0)drawEnemy(e)})}else{players.forEach(drawFighter);enemies.forEach(e=>{if(e.hp>0)drawEnemy(e)})}ctx.restore();$('score').textContent='SCORE '+String(score).padStart(6,'0');$('lives').textContent=players.map(p=>p.active?'❤️':'✖️').join(' ');if(gameOver){ctx.fillStyle='#090d18bb';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffd166';ctx.textAlign='center';ctx.font='900 '+Math.max(24,W*.055)+'px system-ui';ctx.fillText('GAME OVER',W/2,H/2);ctx.font='bold '+Math.max(13,W*.02)+'px system-ui';ctx.fillStyle='white';ctx.fillText('REFRESH TO PLAY AGAIN',W/2,H/2+35)}}
+function loop(){if(role==='host'){hostUpdate();hostLoop()}else if(role==='client'&&hostConn&&hostConn.open){hostConn.send({type:'input',slot,input:{...input}})}render();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+window.addEventListener('beforeunload',()=>{if(role==='client'&&hostConn&&hostConn.open)hostConn.send({type:'leave',slot})});
+})();
+</script></body></html>
