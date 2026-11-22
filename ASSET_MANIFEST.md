@@ -66,3 +66,7 @@ Each environment needs distant, middle, and foreground layers, stage props, haza
 - Backgrounds: separate parallax layers.
 - Audio: web-friendly compressed formats with source masters retained.
 - All third-party assets must have documented licenses.
+
+
+## First vertical-slice implementation note
+Downtown currently uses procedural placeholder canvas graphics for heroes, NEXUS patrols, ticket bots, managers, and the boss. The asset entries above remain planned until final authored pixel-art files are added and reviewed. The Manager's boss presentation currently has a distinct larger silhouette and health bar, but still needs final sprite animation and audio.
