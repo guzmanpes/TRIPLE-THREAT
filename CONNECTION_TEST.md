@@ -1,0 +1,3 @@
+# Connection test
+
+Temporary GitHub write-permission check. This file will be removed immediately.
