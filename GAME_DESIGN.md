@@ -3,63 +3,59 @@
 ## Creative direction
 - Genre: three-player cooperative side-scrolling arcade beat-'em-up.
 - Platform: mobile Safari, three iPhones, one host and two joiners; static GitHub Pages hosting.
-- Art: comic-book action, thick ink outlines, halftone textures, saturated pop-art colors, expressive faces, speed lines and impact lettering.
-- Tone: funny, fast, ridiculous and energetic. Keep action readable on small phone screens.
-- Story: NEXUS Corporation has bought the city. CEO Director Vex is converting public life into a corporate dystopia. Three heroes fight through the company's absurd security apparatus to expose Vex.
+- Art: 16-bit retro arcade pixel art, bold silhouettes, limited palettes, animated impact effects and layered scrolling environments.
+- Tone: wild, absurd comedy. Visual jokes and short dialogue should never interrupt combat.
+- Identity: The Unlikely Heroes — three ordinary people accidentally become the city's only hope.
+- Difficulty: classic arcade; challenging but fair.
+- Orientation: landscape.
+- Heroes: Jack Hammer, Zip, and Pixel.
 
 ## Premise
-NEXUS promised a brighter tomorrow. Now robots issue parking tickets, guards enforce mandatory fun, and every street corner has a subscription kiosk. Three heroes decide the city has had enough.
+NEXUS Corporation launches THE PERFECT CITY 3000, promising to eliminate crime, traffic, bad manners, wasted time, and unnecessary happiness. A catastrophic system failure is accidentally triggered by three strangers trying to get free promotional merchandise. NEXUS labels them the three most wanted people in the city. They fight back.
 
 ## Heroes
-1. The Brawler — balanced close-range fighter; Ground Smash special. Broad silhouette, oversized gloves, warm yellow/orange palette.
-2. The Speedster — fast movement and rapid combo chains; Lightning Rush special. Lean silhouette, cyan accents and motion streaks.
-3. The Tank — slower, durable, heavy hits; Shockwave special. Stocky silhouette, magenta/red accents and oversized boots.
-Names and final designs remain open for later selection.
+1. Jack Hammer — former mechanic and heavy hitter. Oversized wrench. Slow movement, high damage, powerful knockback. Special: Wrecking Ball.
+2. Zip — reckless delivery courier and speed fighter. Skateboard. Fast movement and combo chains. Special: Delivery Express.
+3. Pixel — eccentric inventor and gadget specialist. Experimental backpack. Crowd control and status effects. Special: Glitch Grenade.
 
-## Five-stage campaign
-1. Downtown — NEXUS street patrols; boss: The Franchise, a smug regional manager in powered armor.
-2. The Subway — ticket scanners, turnstile bots and platform hazards; boss: The Conductor.
-3. The Factory — conveyor belts and productivity machines; boss: HR-9000.
-4. NEXUS Tower — executive security and office-floor hazards; boss: The Board.
-5. Vex's Launch Party — a ridiculous product-launch arena; final boss: Director Vex and the NEXUS Prime exosuit.
+## Campaign
+1. Downtown Disaster — NEXUS street patrols; boss: The Manager, a corporate middle manager in a powered office chair.
+2. Subway of Doom — ticket bots, commuter drones and train hazards; boss: The Conductor.
+3. Factory of Fools — conveyor belts and productivity machines; boss: HR-9000.
+4. The Mall of Misery — shopping cart racers, mutant mascots and automated food courts; boss: The Brand Ambassador.
+5. NEXUS Headquarters — elite security and experimental technology; final boss: Director Vex and the Perfect City control machine.
 
-## Core gameplay loop
-Move through a scrolling stage, fight waves, earn score, collect temporary power-ups, defeat a stage boss, then advance. The team shares objectives; players retain individual health and score contribution.
+## Core gameplay
+Move through a scrolling stage, fight waves, build combos, collect temporary power-ups, defeat a boss, and advance. Each hero has a distinct combat identity. Players share objectives while retaining individual health and score contribution.
 
 ## Combat pillars
-- Responsive horizontal movement and depth-lane movement.
-- Fast punch/kick chains, knockback, hit-stop, impact flashes and screen shake.
-- Jump attacks, character-specific specials and cooperative combo finishers.
-- Readable enemy telegraphs, varied enemy archetypes and multi-phase bosses.
+- Horizontal movement and depth-lane movement.
+- Punch combos, kicks, jump attacks, grabs / throws, knockback and hit feedback.
+- Character-specific specials with cooldown or meter.
+- Readable enemy telegraphs and multi-phase bosses.
+- A cooperative Triple Threat finisher that rewards coordinated play.
 - Clear feedback for damage, invulnerability, low health, joins and disconnects.
 
-## Comedy and narrative
-Short speech bubbles, fake corporate slogans, boss introductions, environmental jokes and punchy between-stage panels. Humor should be visual and brief so it never blocks combat.
+## Comedy
+A robot displays “YOUR FEEDBACK IS IMPORTANT TO US” after being punched. Defeated managers drop performance reviews. Vending machines dispense weapons. Bosses call mandatory breaks. Director Vex shouts about quarterly earnings.
 
-## Presentation and progression
-Title comic cover → character select → short story panel → stage → boss intro → results panel → next issue.
-HUD: three distinct player health indicators, team score, stage title, boss health bar and special meter.
-Sound direction: comic impacts, arcade percussion and short character callouts; add after core gameplay and mobile performance are stable.
-
-## Development roadmap
-### Milestone 1 — visual identity (in progress)
-Comic-book palette, inked fighters/enemies, halftone city backdrop and NEXUS title/story introduction.
-### Milestone 2 — hero identity and front end
-Character selection, hero-specific stats/colors, story panels, stage title cards and persistent room-code display.
-### Milestone 3 — combat feel
-Combo chains, kick/jump attacks, hit-stop, knockback, special meters, power-ups and cooperative finishers.
-### Milestone 4 — campaign systems
-Scrolling stage camera, level boundaries, wave triggers, boss encounters, stage transitions and victory/defeat flow.
-### Milestone 5 — multiplayer hardening
-Reliable player identity and slot reuse, disconnect/reconnect handling, host-authoritative simulation, input throttling, latency feedback and three-device testing.
-### Milestone 6 — polish
-Sound, accessibility, pause/restart, onboarding, performance tuning and real-device QA.
+## Presentation
+Title screen → character selection → opening story panels → stage → boss intro → results → next stage → ending. HUD includes three player health indicators, team score, stage title, combo counter, and boss health.
 
 ## Technical constraints
-- Keep the game deployable as static files on GitHub Pages.
-- Browser multiplayer currently uses PeerJS signaling and WebRTC; internet is required for connection setup.
-- Do not claim offline LAN support.
-- Test on three physical iPhones in Safari before calling the build release-ready.
+- Static GitHub Pages hosting.
+- PeerJS/WebRTC for browser multiplayer; internet required for signaling.
+- No offline LAN claim.
+- Must be tested on three physical iPhones in Safari before release.
+- Landscape-first responsive interface with safe-area handling and touch controls.
 
-## Current status
-This document defines the target game. The first visual/story code pass is next; the complete campaign, character selection, specials and boss fights are not yet implemented.
+## Production roadmap
+1. Visual identity and front-end foundation.
+2. Three distinct heroes, animation sets, and mobile combat controls.
+3. Reliable three-device multiplayer and character selection.
+4. Complete Downtown vertical slice and The Manager boss.
+5. Remaining four stages and bosses.
+6. Audio, story sequences, performance, accessibility, and real-device QA.
+
+## Status
+This document defines the approved target. A feature is not considered complete until it is implemented, committed, and tested.
