@@ -113,6 +113,7 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
+const heroSpriteSheet=new Image();heroSpriteSheet.src='assets/hero-sprites.png';
 let W=960,H=500,dpr=1,role='none',peer=null,hostConn=null,connections=[],room='',slot=0,players=[],enemies=[],score=0,frame=0,lastNet=0,gameStarted=false,gameOver=false,shake=0,selectedHero='jack',camera=0,stageWave=0,waveClock=0,boss=null,banner='',bannerTimer=0,stageWon=false,stageIndex=0,train={timer:420,x:-300,active:false,warning:false};
 const heroes={
  jack:{name:'JACK',full:'JACK HAMMER',color:'#f6a52e',dark:'#9c4b27',skin:'#f0bd8c',hair:'#382638',accent:'#ffe16b',speed:2.35,damage:2,special:'WRECKING BALL'},
@@ -208,6 +209,31 @@ const patterns={
  pixel:[".....HHHHHH.....","....HHHHHHHH....","....SSSSSSSS....","....SSEEEESS....","....SSSSSSSS....",".....SCCCCS.....","...PPPPPPPPPP...","...PPPPPPPPPP...","....PPPPPPPP....","....PPPPPPPP....",".....PPPPPP.....",".....PPPPPP.....",".....BB..BB.....",".....BB..BB.....","....BBB..BBB....","....BBB..BBB....","...WW......WW...","...WW......WW..."]
 };
 function drawPixelHero(p){
+ if(!heroSpriteSheet.complete||!heroSpriteSheet.naturalWidth){drawPixelHeroFallback(p);return}
+ const h=heroes[p.charId]||heroes.jack;
+ const x=Math.round(p.x-camera),ground=H*(.78-(p.lane-.5)*.24);
+ const y=Math.round(ground-p.y);
+ const row=p.charId==='zip'?1:p.charId==='pixel'?2:0;
+ let col=0;
+ if(p.y>1)col=3;
+ else if(p.attack>0||p.kick>0||p.special>0)col=2;
+ else if(Math.abs(p.vx||0)>.1)col=Math.floor(frame/8)%2;
+ ctx.save();ctx.translate(x,y);if(p.inv>0&&Math.floor(frame/3)%2===0)ctx.globalAlpha=.4;
+ ctx.scale(p.dir<0?-1:1,1);
+ ctx.imageSmoothingEnabled=false;
+ // 24px source frames enlarged 4x for authentic chunky arcade pixels.
+ ctx.drawImage(heroSpriteSheet,col*24,row*24,24,24,-48,-106,96,96);
+ if(p.attack>0||p.kick>0||p.special>0){
+  const colr=p.special>0?h.accent:p.kick>0?'#ffad55':'#fff0a0';
+  ctx.strokeStyle=colr;ctx.lineWidth=p.special>0?5:3;ctx.beginPath();ctx.arc(18,-56,p.special>0?43:29,-.95,.72);ctx.stroke();
+  ctx.fillStyle='#fff';ctx.fillRect(29,-63,p.special>0?20:12,7);ctx.fillStyle=colr;ctx.fillRect(40,-66,7,5);
+ }
+ ctx.fillStyle='#10152d';ctx.fillRect(-28,-137,56,10);ctx.fillStyle=h.accent;ctx.fillRect(-26,-135,52,2);
+ ctx.fillStyle='#fff';ctx.font='900 8px monospace';ctx.textAlign='center';ctx.fillText(p.name,0,-129);
+ ctx.fillStyle='#080b1a';ctx.fillRect(-22,-124,44,3);ctx.fillStyle='#7df3a4';ctx.fillRect(-22,-124,44*Math.max(0,p.hp)/3,3);
+ ctx.restore();
+}
+function drawPixelHeroFallback(p){
  const h=heroes[p.charId]||heroes.jack;
  const x=Math.round(p.x-camera),ground=H*(.78-(p.lane-.5)*.24);
  const bob=Math.round(Math.sin(frame*.16+p.id*1.7)*1.5),y=Math.round(ground-p.y+bob);
