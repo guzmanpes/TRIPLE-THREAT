@@ -41,21 +41,17 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
 .hero .portrait{height:68px;display:flex;align-items:center;justify-content:center;font-size:38px;filter:drop-shadow(2px 3px #000);image-rendering:pixelated}
 .hero strong{display:block;font-size:clamp(10px,2vw,14px);letter-spacing:.08em}
 .hero small{display:block;color:#aab6df;font-size:9px;line-height:1.25;margin-top:4px}
-#controls{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:95px;padding:0 3px;user-select:none;-webkit-user-select:none}
-.pad{position:relative;isolation:isolate;display:grid;grid-template-columns:clamp(37px,6vw,55px) clamp(37px,6vw,55px) clamp(37px,6vw,55px);grid-template-rows:repeat(3,clamp(37px,6vw,55px));gap:0;padding:7px;border:5px solid #c7c9c9;border-radius:25px;background:linear-gradient(145deg,#050609,#171a1e 48%,#020304);box-shadow:0 0 0 3px #656a70,0 5px 0 #08090b,inset 0 0 0 3px #08090b,inset 0 2px 5px #ffffff35}
-.pad .ctrl{position:relative;z-index:1;min-height:0;width:100%;height:100%;padding:0;border:2px solid #080a0d;border-radius:3px;background:linear-gradient(145deg,#30343a,#111419 65%,#292d32);color:#090c11;font-size:clamp(17px,2.4vw,25px);text-shadow:0 1px 1px #9da2a8;touch-action:none;box-shadow:inset 0 2px 3px #ffffff30,inset 0 -3px 4px #000b,0 1px 0 #050608}
-.pad .ctrl:active,.pad .ctrl.down{background:linear-gradient(145deg,#59616a,#252a30);transform:translateY(2px);box-shadow:inset 0 2px 5px #000b}
-#up{grid-column:2;grid-row:1;border-radius:10px 10px 2px 2px}
-#left{grid-column:1;grid-row:2;border-radius:10px 2px 2px 10px}
-#right{grid-column:3;grid-row:2;border-radius:2px 10px 10px 2px}
-#down{grid-column:2;grid-row:3;border-radius:2px 2px 10px 10px}
-.padCenter{grid-column:2;grid-row:2;z-index:2;align-self:center;justify-self:center;width:72%;height:72%;border-radius:50%;background:radial-gradient(circle at 35% 28%,#77818c 0%,#30363e 28%,#090c11 72%);border:2px solid #07090c;box-shadow:inset 0 2px 4px #ffffff55,0 2px 2px #000;pointer-events:none}
-.actionGroup{display:flex;align-items:center;gap:6px}
-.actionBtn{width:clamp(52px,10vw,82px);height:clamp(52px,10vw,82px);border-radius:50%;padding:3px;font-size:clamp(9px,1.8vw,12px);line-height:1.05;color:#15152b}
+#controls{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:112px;padding:0 3px;user-select:none;-webkit-user-select:none;touch-action:none}
+#joystickZone{position:relative;flex:1;align-self:stretch;max-width:330px;min-width:115px;touch-action:none;overflow:visible}
+#joystickBase{position:absolute;left:50%;top:50%;width:clamp(104px,22vw,142px);height:clamp(104px,22vw,142px);transform:translate(-50%,-50%);border:3px solid #8490b4;border-radius:50%;background:radial-gradient(circle,#29365b 0 38%,#17213f 40% 68%,#0b1025 70%);box-shadow:inset 0 0 0 4px #080d20,0 5px 0 #070b19;opacity:.7;pointer-events:none}
+#joystickKnob{position:absolute;left:50%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%);border:3px solid #d9e2ff;border-radius:50%;background:linear-gradient(145deg,#9caed8,#394b79 70%);box-shadow:0 4px 0 #111a36, inset 0 2px 4px #fff8;pointer-events:none}
+#joystickZone.active #joystickBase{opacity:1;border-color:var(--gold)}
+.actionGroup{display:flex;align-items:center;justify-content:flex-end;gap:clamp(5px,1.5vw,12px);flex:1;min-width:0}
+.actionBtn{width:clamp(58px,11vw,84px);height:clamp(58px,11vw,84px);flex:0 0 auto;border-radius:50%;padding:3px;font-size:clamp(9px,1.8vw,12px);line-height:1.05;color:#15152b;touch-action:none;user-select:none;-webkit-user-select:none}
 #jump{background:var(--blue);box-shadow:0 4px 0 #166a94}
 #attack{background:var(--red);color:white;box-shadow:0 4px 0 #92233e}
-#kick{background:#ff9c48;box-shadow:0 4px 0 #9c4f20}
 #special{background:#bb8aff;box-shadow:0 4px 0 #633c9c}
+.actionBtn.down{transform:translateY(3px);filter:brightness(1.25)}
 .foot{display:flex;justify-content:space-between;gap:8px;color:#7f8bb7;font-size:9px;font-weight:800;letter-spacing:.04em}
 #rotateHint{display:none}
 @media(orientation:portrait) and (max-width:700px){
@@ -65,11 +61,12 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
  #stage:before{font-size:7px;bottom:5px;right:6px}
  #hud{inset:5px 6px auto;font-size:10px;gap:4px;flex-wrap:wrap}
  #roomBadge{top:31px;left:6px;font-size:8px}
- #controls{min-height:82px;max-height:88px;gap:5px;padding:0;justify-content:space-between}
- .pad{grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:0;padding:6px;border-width:4px;border-radius:19px;flex:0 0 auto}.pad .ctrl{font-size:17px}
- .ctrl{font-size:16px}
- .actionGroup{gap:3px;flex:1;justify-content:flex-end}
- .actionBtn{width:clamp(43px,12.3vw,52px);height:clamp(43px,12.3vw,52px);font-size:clamp(7px,2.1vw,9px);padding:1px;border-width:1px}
+ #controls{min-height:100px;max-height:112px;gap:5px;padding:0;justify-content:space-between}
+ #joystickZone{min-width:105px}
+ #joystickBase{width:100px;height:100px}
+ #joystickKnob{width:42px;height:42px}
+ .actionGroup{gap:4px;flex:1;justify-content:flex-end}
+ .actionBtn{width:clamp(52px,15vw,64px);height:clamp(52px,15vw,64px);font-size:clamp(8px,2.2vw,10px);padding:1px}
  .foot{display:none}
  #overlay{padding:6px}
  .panel{width:100%;max-height:100%;padding:10px 9px;border-width:2px}
@@ -107,10 +104,10 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
 <p class="small" id="menuNote">Choose your hero, then host a room or join a friend. Internet is required for multiplayer.</p>
 </div></div></section>
 <section id="controls">
-<div class="pad"><button class="ctrl" id="up" aria-label="Move up">▲</button><button class="ctrl" id="left" aria-label="Move left">◀</button><div class="padCenter" aria-hidden="true"></div><button class="ctrl" id="right" aria-label="Move right">▶</button><button class="ctrl" id="down" aria-label="Move down">▼</button></div>
-<div class="actionGroup"><button id="jump" class="ctrl actionBtn">JUMP</button><button id="kick" class="ctrl actionBtn">KICK</button><button id="special" class="ctrl actionBtn">SPECIAL</button><button id="attack" class="ctrl actionBtn">PUNCH</button></div>
+<div id="joystickZone" aria-label="Floating movement joystick"><div id="joystickBase"><div id="joystickKnob"></div></div></div>
+<div class="actionGroup"><button id="jump" class="ctrl actionBtn" aria-label="Jump">JUMP</button><button id="special" class="ctrl actionBtn" aria-label="Special attack">SPECIAL</button><button id="attack" class="ctrl actionBtn" aria-label="Punch and kick combo">ATTACK</button></div>
 </section>
-<div class="foot"><span>MOVE · JUMP · PUNCH · KICK · SPECIAL</span><span id="playersLabel">PLAYERS 0/3</span><span>CLASSIC ARCADE</span></div>
+<div class="foot"><span>MOVE · JUMP · ATTACK COMBO · SPECIAL</span><span id="playersLabel">PLAYERS 0/3</span><span>CLASSIC ARCADE</span></div>
 </main>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -160,7 +157,7 @@ function spawnWave(index){const wave=campaignWaves[stageIndex][index];if(!wave)r
 
 function spawnManager(){const spec=stageIndex===0?['managerBoss','THE MANAGER',42]:stageIndex===1?['conductorBoss','THE CONDUCTOR',50]:['hrBoss','HR-9000',58];boss={kind:spec[0],name:spec[1],x:W*.84,lane:.5,hp:spec[2],maxHp:spec[2],dir:-1,hit:0,windup:0,attack:0,phase:0};showBanner('BOSS ALERT',stageIndex===0?'PLEASE WELCOME YOUR DIRECT SUPERVISOR.':stageIndex===1?'NEXT STOP: A VERY BAD DAY.':'YOUR PERFORMANCE REVIEW IS NOW COMBAT.',190)}
 
-function applyInput(p,inp){if(!p||!p.active)return;p.vx=0;if(inp.left){p.vx=-heroes[p.charId].speed;p.dir=-1}if(inp.right){p.vx=heroes[p.charId].speed;p.dir=1}if(inp.up)p.lane=clamp(p.lane-.018,.15,.85);if(inp.down)p.lane=clamp(p.lane+.018,.15,.85);if(inp.jump&&p.y===0){p.vy=8.7;p.jump=1}if(inp.attack&&p.attack<=0)p.attack=15;if(inp.kick&&p.kick<=0)p.kick=23;if(inp.special&&p.specialCooldown<=0){p.special=42;p.specialCooldown=190}}
+function applyInput(p,inp){if(!p||!p.active)return;p.vx=0;if(inp.left){p.vx=-heroes[p.charId].speed;p.dir=-1}if(inp.right){p.vx=heroes[p.charId].speed;p.dir=1}if(inp.up)p.lane=clamp(p.lane-.018,.15,.85);if(inp.down)p.lane=clamp(p.lane+.018,.15,.85);if(inp.jump&&p.y===0){p.vy=8.7;p.jump=1}if(inp.attack&&p.attack<=0&&p.kick<=0){p.comboStep=(p.comboStep||0)+1;if(p.comboStep%2===0)p.kick=23;else p.attack=15}if(inp.kick&&p.kick<=0)p.kick=23;if(inp.special&&p.specialCooldown<=0){p.special=42;p.specialCooldown=190}}
 function updatePlayer(p){p.x=clamp(p.x+p.vx,26,W-26);if(p.vy||p.y>0){p.y+=p.vy;p.vy-=.42;if(p.y<0){p.y=0;p.vy=0;p.jump=0}}if(p.attack>0)p.attack--;if(p.kick>0)p.kick--;if(p.special>0)p.special--;if(p.specialCooldown>0)p.specialCooldown--;if(p.inv>0)p.inv--}
 function hostUpdate(){
  if(!gameStarted||gameOver)return;
@@ -216,9 +213,17 @@ function startHost(){if(!window.Peer){setStatus('NETWORK LIBRARY FAILED');showMe
 function joinGame(){const code=$('roomInput').value.trim().toUpperCase();if(code.length!==6){$('menuNote').textContent='Enter the 6-character room code.';return}if(!window.Peer){$('menuNote').textContent='Connection library did not load. Check internet and reload.';return}role='client';room=code;setStatus('CONNECTING');peer=new Peer();peer.on('open',()=>{hostConn=peer.connect('tt-'+code.toLowerCase(),{reliable:true});hostConn.on('open',()=>{hostConn.send({type:'join',charId:selectedHero});setStatus('JOINING ROOM')});hostConn.on('data',m=>{if(m.type==='welcome'){slot=m.slot;setStatus('PLAYER '+(slot+1)+' · '+heroes[selectedHero].name);$('roomBadge').style.display='block';$('roomBadge').textContent='ROOM '+room;hideMenu()}else if(m.type==='state'){players=m.state.players;enemies=m.state.enemies;boss=m.state.boss;score=m.state.score;frame=m.state.frame;gameOver=m.state.gameOver;stageWave=m.state.stageWave;banner=m.state.banner;bannerTimer=m.state.bannerTimer;stageWon=m.state.stageWon;stageIndex=m.state.stageIndex||0;train=m.state.train||train;gameStarted=true;updatePlayerCount()}else if(m.type==='full'){showMenu('That room already has three players.');setStatus('ROOM FULL')}});hostConn.on('close',()=>{setStatus('HOST DISCONNECTED');showMenu('The host connection ended. Ask them to create a new room.')});hostConn.on('error',()=>{setStatus('CONNECTION FAILED');showMenu('Could not connect. Check the room code and internet connection.')})});peer.on('error',e=>{setStatus('CONNECTION ERROR');showMenu('Could not connect ('+e.type+'). Check the code and try again.')})}
 $('hostBtn').onclick=startHost;$('joinBtn').onclick=()=>{$('joinBox').classList.remove('hidden');$('roomInput').focus()};$('connectBtn').onclick=joinGame;
 document.querySelectorAll('[data-hero]').forEach(btn=>btn.addEventListener('click',()=>{selectedHero=btn.dataset.hero;document.querySelectorAll('[data-hero]').forEach(b=>b.classList.toggle('selected',b===btn));$('menuNote').textContent=heroes[selectedHero].full+' SELECTED · '+heroes[selectedHero].special}));
-function pointerButton(id,key){const el=$(id);const on=e=>{e.preventDefault();input[key]=true;el.classList.add('down');try{el.setPointerCapture(e.pointerId)}catch(_){}};const off=e=>{e.preventDefault();input[key]=false;el.classList.remove('down')};el.addEventListener('pointerdown',on);['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,off))}
-['left','right','up','down','attack','kick','jump','special'].forEach(k=>pointerButton(k,k));
-const keymap={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down',' ':'attack',j:'jump',J:'jump',k:'kick',K:'kick',l:'special',L:'special'};window.addEventListener('keydown',e=>{const k=keymap[e.key];if(k){e.preventDefault();input[k]=true}});window.addEventListener('keyup',e=>{const k=keymap[e.key];if(k){e.preventDefault();input[k]=false}});
+const heldPointers={};
+function bindHoldButton(id,key){const el=$(id);const on=e=>{e.preventDefault();heldPointers[e.pointerId]=key;input[key]=true;el.classList.add('down');try{el.setPointerCapture(e.pointerId)}catch(_){}};const off=e=>{if(heldPointers[e.pointerId]!==key)return;e.preventDefault();delete heldPointers[e.pointerId];input[key]=Object.values(heldPointers).includes(key);if(!input[key])el.classList.remove('down')};el.addEventListener('pointerdown',on);['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,off))}
+bindHoldButton('jump','jump');bindHoldButton('special','special');
+const joystickZone=$('joystickZone'),joystickBase=$('joystickBase'),joystickKnob=$('joystickKnob');let joystickPointer=null,joyCenter={x:0,y:0};
+function updateJoystick(e){const dx=e.clientX-joyCenter.x,dy=e.clientY-joyCenter.y,limit=43,dist=Math.hypot(dx,dy),scale=dist>limit?limit/dist:1,x=dx*scale,y=dy*scale;joystickKnob.style.left='calc(50% + '+x+'px)';joystickKnob.style.top='calc(50% + '+y+'px)';input.left=dx<-13;input.right=dx>13;input.up=dy<-13;input.down=dy>13}
+function endJoystick(e){if(joystickPointer!==e.pointerId)return;input.left=input.right=input.up=input.down=false;joystickPointer=null;joystickZone.classList.remove('active');joystickKnob.style.left='50%';joystickKnob.style.top='50%';}
+joystickZone.addEventListener('pointerdown',e=>{if(joystickPointer!==null)return;e.preventDefault();joystickPointer=e.pointerId;const r=joystickZone.getBoundingClientRect();joyCenter={x:e.clientX,y:e.clientY};joystickBase.style.left=(e.clientX-r.left)+'px';joystickBase.style.top=(e.clientY-r.top)+'px';joystickKnob.style.left='50%';joystickKnob.style.top='50%';joystickZone.classList.add('active');try{joystickZone.setPointerCapture(e.pointerId)}catch(_){}});
+joystickZone.addEventListener('pointermove',e=>{if(joystickPointer===e.pointerId){e.preventDefault();updateJoystick(e)}});
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>joystickZone.addEventListener(ev,e=>endJoystick(e)));
+bindHoldButton('attack','attack');
+const keymap={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down',' ':'attack',j:'jump',J:'jump',k:'kick',K:'kick',l:'special',L:'special'};window.addEventListener('keydown',e=>{const k=keymap[e.key];if(k){e.preventDefault();input[k]=true}});window.addEventListener('keyup',e=>{const k=keymap[e.key];if(k){e.preventDefault();input[k]=false}});window.addEventListener('blur',()=>{Object.keys(input).forEach(k=>input[k]=false);Object.keys(heldPointers).forEach(k=>delete heldPointers[k]);joystickPointer=null;joystickZone.classList.remove('active');joystickKnob.style.left='50%';joystickKnob.style.top='50%'});
 const patterns={
  jack:[".....HHHHHH.....","....HHHHHHHH....","....SSSSSSSS....","....SSEEEESS....","....SSSSSSSS....",".....SCCCCS.....","..DDDDCCCCDDDD..","..DDDDCCCCDDDD..","....DDCCCCDD....","....DDCCCCDD....",".....DDDDDD.....",".....DDDDDD.....",".....BB..BB.....",".....BB..BB.....","....BBB..BBB....","....BBB..BBB....","...WW......WW...","...WW......WW..."],
  zip:["......HHHH......",".....HHHHHH.....",".....HHHHHH.....",".....SSSSSS.....",".....SSEESS.....",".....SSSSSS.....","......SCCS......","..CCCCCCCCCC....","..CCCCCCCCCC....","....CCCCCCCC....","....CCCCCCCC....",".....BBBBBB.....",".....BB..BB.....",".....BB..BB.....","....BBB..BBB....","....BBB..BBB....","...WW......WW...","...WW......WW..."],
