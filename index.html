@@ -332,7 +332,10 @@ function drawPixelHeroFallback(p){
  ctx.restore();
 }
 function drawEnemy(e){
- const x=Math.round(e.x-camera),y=Math.round(H*(.78-(e.lane-.5)*.24)+Math.sin(frame*.12+e.phase)*1.2);
+ const walking=e.windup<=0&&e.attack<=0;
+ const step=walking?Math.round(Math.sin(frame*.22+e.phase)*3):0;
+ const bob=walking?Math.abs(Math.sin(frame*.22+e.phase))*2:0;
+ const x=Math.round(e.x-camera),y=Math.round(H*(.78-(e.lane-.5)*.24)+Math.sin(frame*.12+e.phase)*1.2-bob);
  ctx.save();ctx.translate(x,y);
  const r=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)};
  // One evil 8-bit NEXUS trooper per level: same readable silhouette,
@@ -348,18 +351,22 @@ function drawEnemy(e){
  const flash=e.hit>0&&Math.floor(frame/2)%2===0;
  ctx.fillStyle='#080b1aaa';ctx.beginPath();ctx.ellipse(0,5,23,7,0,0,Math.PI*2);ctx.fill();
  // Thick boots and segmented legs.
- r(-17,-23,13,19,c.dark);r(4,-23,13,19,c.dark);
- r(-20,-7,18,6,'#090d18');r(2,-7,19,6,'#090d18');
- r(-17,-27,13,5,c.light);r(4,-27,13,5,c.light);
+ r(-17,-23+step,13,19,c.dark);r(4,-23-step,13,19,c.dark);
+ r(-20,-7+step,18,6,'#090d18');r(2,-7-step,19,6,'#090d18');
+ r(-17,-27+step,13,5,c.light);r(4,-27-step,13,5,c.light);
  // Broad armored torso with unmistakable pixel-art outline.
  r(-23,-70,46,47,c.dark);r(-19,-67,38,40,flash?'#fff':c.mid);
  r(-14,-62,28,29,c.light);r(-11,-58,22,5,c.dark);
  r(-7,-51,14,12,c.dark);r(-4,-48,8,6,c.glow);
  // Shoulder plates and block arms.
- r(-29,-67,12,18,c.dark);r(-27,-65,8,13,c.light);
- r(17,-67,12,18,c.dark);r(19,-65,8,13,c.light);
- r(-30,-49,10,17,c.mid);r(20,-49,10,17,c.mid);
- r(-31,-34,12,6,c.dark);r(19,-34,12,6,c.dark);
+ const wind=e.windup>0,swipe=e.attack>0;
+ const armDrop=walking?step:0,reach=swipe?13:wind?7:0;
+ r(-29,-67-armDrop,12,18,c.dark);r(-27,-65-armDrop,8,13,c.light);
+ r(17,-67+armDrop,12,18,c.dark);r(19,-65+armDrop,8,13,c.light);
+ r(-30,-49+armDrop,10,17,c.mid);r(20+reach,-49-reach*.35,10,17,c.mid);
+ r(-31,-34+armDrop,12,6,c.dark);r(19+reach,-34-reach*.35,12,6,c.dark);
+ if(wind){r(23,-57,9,8,c.glow);r(29,-62,4,4,'#fff')}
+ if(swipe){r(29,-53,13,8,c.eye);r(39,-57,7,5,'#fff')}
  // Angular helmet, visor, glowing eyes, and a small crown-like antenna.
  r(-17,-91,34,22,c.dark);r(-13,-88,26,17,flash?'#fff':c.mid);
  r(-11,-84,22,9,c.dark);r(-8,-82,5,4,c.eye);r(3,-82,5,4,c.eye);
@@ -368,7 +375,10 @@ function drawEnemy(e){
  // Tiny NEXUS warning mark on chest.
  r(-4,-59,8,3,c.glow);r(-2,-56,4,8,c.glow);
  // Damage flash, attack wind-up warning, and marching pixel glint.
- if(e.hit>0&&Math.floor(frame/2)%2===0){r(-23,-91,46,87,'#ffffff22')}
+ if(e.hit>0){
+  if(Math.floor(frame/2)%2===0){r(-23,-91,46,87,'#ffffff44');r(-31,-80,5,5,'#fff');r(27,-68,5,5,c.glow)}
+  r(-27,-101,7,4,'#fff');r(23,-95,5,5,c.eye);
+ }
  if(e.windup>0){ctx.strokeStyle='#ff526c';ctx.lineWidth=3;ctx.beginPath();ctx.strokeRect(-34,-98,68,100);ctx.fillStyle='#ff526c';r(-3,-108,6,5,'#ff526c')}
  if(Math.floor(frame/12+e.phase)%2===0){r(-25,-58,3,3,'#fff');r(22,-58,3,3,'#fff')}
  ctx.restore();
