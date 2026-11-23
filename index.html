@@ -333,25 +333,44 @@ function drawPixelHeroFallback(p){
 }
 function drawEnemy(e){
  const x=Math.round(e.x-camera),y=Math.round(H*(.78-(e.lane-.5)*.24)+Math.sin(frame*.12+e.phase)*1.2);
- ctx.save();ctx.translate(x,y);ctx.fillStyle='#080b1aaa';ctx.beginPath();ctx.ellipse(0,5,24,7,0,0,Math.PI*2);ctx.fill();
+ ctx.save();ctx.translate(x,y);
  const r=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)};
+ // One evil 8-bit NEXUS trooper per level: same readable silhouette,
+ // with a stage-specific armor palette and glowing hostile eyes.
+ const palettes=[
+  {dark:'#17152c',mid:'#87344d',light:'#d94b58',glow:'#ffb34f',eye:'#ff334f'},
+  {dark:'#111b31',mid:'#28506c',light:'#397fa0',glow:'#55eaff',eye:'#ff496d'},
+  {dark:'#14251d',mid:'#38633a',light:'#76a83f',glow:'#c7ff48',eye:'#ff4057'},
+  {dark:'#21152e',mid:'#57306e',light:'#a14eae',glow:'#f18bff',eye:'#ff3c69'},
+  {dark:'#2b1b28',mid:'#86404f',light:'#d56a6a',glow:'#ffd45c',eye:'#ff254d'}
+ ];
+ const c=palettes[Math.min(stageIndex,palettes.length-1)];
  const flash=e.hit>0&&Math.floor(frame/2)%2===0;
- if(e.kind==='manager'){
-  r(-22,-75,44,47,'#171a31');r(-18,-73,36,44,flash?'#fff':'#586b9e');r(-13,-67,26,31,'#7183b4');
-  r(-11,-92,22,19,'#e9bd97');r(-15,-96,30,7,'#22243d');r(-12,-91,24,4,'#31314b');
-  r(-8,-84,5,4,'#fff5df');r(5,-84,5,4,'#fff5df');r(-6,-83,2,3,'#26233a');r(7,-83,2,3,'#26233a');r(-4,-76,9,3,'#8c4055');
-  r(-4,-69,8,23,'#c63258');r(-17,-27,14,23,'#252743');r(3,-27,14,23,'#252743');r(-20,-8,18,5,'#11162b');r(2,-8,18,5,'#11162b');
-  r(-27,-65,9,17,'#d5e0f0');r(19,-65,9,17,'#d5e0f0');r(22,-51,10,13,'#ffd34e');r(23,-55,8,4,'#fff0a0');
- }else{
-  const ticket=e.kind==='ticket',drone=e.kind==='drone',body=ticket?'#7b6b3a':drone?'#286c80':'#586b91',trim=ticket?'#f2d45f':drone?'#75efff':'#ff6577';
-  r(-19,-65,38,41,'#151a31');r(-16,-63,32,37,flash?'#fff':body);r(-12,-59,24,27,ticket?'#d2ad4d':'#7d91b8');
-  r(-13,-83,26,20,'#171a30');r(-10,-81,20,16,ticket?'#e8c86b':'#d5ad93');r(-13,-86,26,7,trim);
-  r(-7,-75,4,4,'#ff506e');r(4,-75,4,4,'#ff506e');r(-3,-68,7,2,'#28233a');
-  r(-14,-25,11,18,'#24263f');r(3,-25,11,18,'#24263f');r(-17,-8,15,5,'#10162c');r(2,-8,16,5,'#10162c');
-  r(-24,-57,8,18,trim);r(16,-57,8,18,trim);
-  if(ticket){r(-7,-53,14,11,'#f7e7aa');r(-4,-51,8,2,'#4d452d');r(-4,-47,8,2,'#4d452d')}if(drone){r(-25,-52,50,5,'#75efff');r(-31,-55,12,4,'#b7f8ff');r(19,-55,12,4,'#b7f8ff');r(-4,-91,8,8,'#75efff');r(-2,-89,4,4,'#10243b');r(-20,-35,40,4,'#75efff')}
- }
- if(e.windup>0){ctx.strokeStyle='#ff526c';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-44,31+Math.sin(frame*.7)*3,Math.PI,Math.PI*2);ctx.stroke()}
+ ctx.fillStyle='#080b1aaa';ctx.beginPath();ctx.ellipse(0,5,23,7,0,0,Math.PI*2);ctx.fill();
+ // Thick boots and segmented legs.
+ r(-17,-23,13,19,c.dark);r(4,-23,13,19,c.dark);
+ r(-20,-7,18,6,'#090d18');r(2,-7,19,6,'#090d18');
+ r(-17,-27,13,5,c.light);r(4,-27,13,5,c.light);
+ // Broad armored torso with unmistakable pixel-art outline.
+ r(-23,-70,46,47,c.dark);r(-19,-67,38,40,flash?'#fff':c.mid);
+ r(-14,-62,28,29,c.light);r(-11,-58,22,5,c.dark);
+ r(-7,-51,14,12,c.dark);r(-4,-48,8,6,c.glow);
+ // Shoulder plates and block arms.
+ r(-29,-67,12,18,c.dark);r(-27,-65,8,13,c.light);
+ r(17,-67,12,18,c.dark);r(19,-65,8,13,c.light);
+ r(-30,-49,10,17,c.mid);r(20,-49,10,17,c.mid);
+ r(-31,-34,12,6,c.dark);r(19,-34,12,6,c.dark);
+ // Angular helmet, visor, glowing eyes, and a small crown-like antenna.
+ r(-17,-91,34,22,c.dark);r(-13,-88,26,17,flash?'#fff':c.mid);
+ r(-11,-84,22,9,c.dark);r(-8,-82,5,4,c.eye);r(3,-82,5,4,c.eye);
+ r(-4,-77,8,2,c.glow);r(-3,-94,6,4,c.glow);
+ r(-20,-74,6,8,c.dark);r(14,-74,6,8,c.dark);
+ // Tiny NEXUS warning mark on chest.
+ r(-4,-59,8,3,c.glow);r(-2,-56,4,8,c.glow);
+ // Damage flash, attack wind-up warning, and marching pixel glint.
+ if(e.hit>0&&Math.floor(frame/2)%2===0){r(-23,-91,46,87,'#ffffff22')}
+ if(e.windup>0){ctx.strokeStyle='#ff526c';ctx.lineWidth=3;ctx.beginPath();ctx.strokeRect(-34,-98,68,100);ctx.fillStyle='#ff526c';r(-3,-108,6,5,'#ff526c')}
+ if(Math.floor(frame/12+e.phase)%2===0){r(-25,-58,3,3,'#fff');r(22,-58,3,3,'#fff')}
  ctx.restore();
 }
 function drawBoss(){
