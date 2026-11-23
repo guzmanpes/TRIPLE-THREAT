@@ -278,15 +278,12 @@ function drawPixelHero(p){
   ctx.fillStyle='#fff';ctx.fillRect(31+reach,-67,5,4);
  }
  if(p.kick>0){
-  // Combo hit two is a rising uppercut: a vertical strike, clearly unlike the jab.
-  const t=(23-p.kick)/23, lift=Math.round(Math.sin(t*Math.PI)*18);
-  const fist=p.charId==='zip'?'#eaf7f6':p.charId==='pixel'?'#b99aff':'#f0bd8c';
-  ctx.fillStyle='#18243a';ctx.fillRect(12,-78-lift,13,30);
-  ctx.fillStyle=fist;ctx.fillRect(16,-88-lift,9,24);
-  ctx.fillStyle='#fff2a6';ctx.fillRect(20,-112-lift,7,13);
-  ctx.fillStyle='#fff';ctx.fillRect(13,-121-lift,5,6);ctx.fillRect(28,-116-lift,6,5);
-  ctx.fillStyle='#ffad55';ctx.fillRect(8,-108-lift,5,5);ctx.fillRect(31,-104-lift,5,5);
-  ctx.fillStyle='#ffd34e';ctx.fillRect(19,-132-lift,5,9);
+  // Throwing pose for the bomb combo.
+  const t=(23-p.kick)/23, reach=12+Math.round(Math.sin(t*Math.PI)*13);
+  ctx.fillStyle='#18243a';ctx.fillRect(12,-78,reach+12,11);
+  ctx.fillStyle=p.charId==='zip'?'#eaf7f6':p.charId==='pixel'?'#b99aff':'#f0bd8c';
+  ctx.fillRect(20,-76,reach,7);
+  ctx.fillStyle='#fff';ctx.fillRect(31+reach,-82,5,5);
  }
  if(p.special>0){
   const pulse=Math.floor((42-p.special)/5)%2,rad=34+pulse*10;
@@ -367,12 +364,10 @@ function drawPixelHeroFallback(p){
  if(p.charId==='pixel'){R(-47,-91,12,37,'#302448');R(-44,-86,6,22,'#75f4c2');R(28,-55,15,12,'#75f4c2');}
  if(p.attack>0||p.kick>0||p.special>0){
   if(p.kick>0){
-   // Distinct rising uppercut with a vertical fist and impact flare.
-   const t=(23-p.kick)/23,lift=Math.round(Math.sin(t*Math.PI)*18);
-   R(12,-78-lift,13,30,'#18243a');R(16,-88-lift,9,24,'#f0bd8c');
-   R(20,-112-lift,7,13,'#fff2a6');R(13,-121-lift,5,6,'#fff');
-   R(28,-116-lift,6,5,'#fff');R(8,-108-lift,5,5,'#ffad55');
-   R(31,-104-lift,5,5,'#ffad55');R(19,-132-lift,5,9,'#ffd34e');
+   // Short forward throwing pose.
+   const t=(23-p.kick)/23,reach=12+Math.round(Math.sin(t*Math.PI)*13);
+   R(12,-78,reach+12,11,'#18243a');R(20,-76,reach,7,'#f0bd8c');
+   R(31+reach,-82,5,5,'#fff');
   }else{
    const col=p.special>0?h.accent:'#fff0a0';
    ctx.strokeStyle=col;ctx.lineWidth=p.special>0?5:3;ctx.beginPath();ctx.arc(18,-57,p.special>0?43:29,-.95,.72);ctx.stroke();
