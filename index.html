@@ -462,7 +462,7 @@ async function keepScreenAwake(){
  try{if('wakeLock' in navigator)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(role==='host'||role==='client'))keepScreenAwake()});
-['hostBtn','connectBtn'].forEach(id=>$(id).addEventListener('click',()=>{keepScreenAwake();if(screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(()=>{})}}));
+['hostBtn','connectBtn'].forEach(id=>$(id).addEventListener('click',keepScreenAwake));
 if('serviceWorker' in navigator && location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 canvas.addEventListener('pointerdown',()=>{if(role==='host'&&gameOver&&stageWon){if(stageIndex===0)beginSubway();else if(stageIndex===1)beginFactory()}});
 window.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&role==='host'&&gameOver&&stageWon){if(stageIndex===0)beginSubway();else if(stageIndex===1)beginFactory()}});
