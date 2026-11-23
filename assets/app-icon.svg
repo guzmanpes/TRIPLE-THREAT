@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="72" fill="#11152a"/>
+<path d="M48 94h416v324H48z" fill="#28345f" stroke="#9ca9d2" stroke-width="16"/>
+<path d="M80 126h352v260H80z" fill="#171d39" stroke="#53618b" stroke-width="8"/>
+<path d="M116 170h280v48H116z" fill="#ffd34e"/>
+<path d="M136 254h76v92h-76zM220 254h76v92h-76zM304 254h76v92h-76z" fill="#ff4e62" stroke="#fff8dc" stroke-width="8"/>
+<path d="M154 278h40v40h-40zM238 278h40v40h-40zM322 278h40v40h-40z" fill="#11152a"/>
+<path d="M106 370h300v18H106z" fill="#56d9ff"/>
+<text x="256" y="206" text-anchor="middle" font-family="monospace" font-weight="1000" font-size="34" fill="#11152a">TRIPLE</text>
+<text x="256" y="448" text-anchor="middle" font-family="monospace" font-weight="1000" font-size="34" fill="#ffd34e">THREAT</text>
+</svg>
