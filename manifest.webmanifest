@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "TRIPLE THREAT: NEXUS",
+  "short_name": "TRIPLE THREAT",
+  "description": "A three-player retro arcade beat-em-up.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090d1d",
+  "theme_color": "#11152a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
