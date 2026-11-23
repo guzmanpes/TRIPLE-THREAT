@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#11152a">
 <meta name="description" content="TRIPLE THREAT: NEXUS — a wild three-player retro arcade beat-em-up.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRIPLE THREAT">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./assets/app-icon.svg">
 <title>TRIPLE THREAT — NEXUS</title>
 <style>
 :root{--ink:#fff8dc;--gold:#ffd34e;--red:#ff4e62;--blue:#56d9ff;--purple:#aa79ff;--panel:#171d39;--line:#53618b}
@@ -12,7 +19,7 @@
 .hidden{display:none!important}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090d1d;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}
 body{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 0,#343b68 0,#10152b 58%,#080b17 100%)}
-#app{width:min(100vw,1200px);height:100dvh;max-height:900px;display:flex;flex-direction:column;padding:clamp(7px,1.8vw,16px);gap:8px}
+#app{width:100vw;height:100dvh;min-height:100svh;max-height:none;max-width:none;display:flex;flex-direction:column;padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));gap:clamp(4px,1vh,8px)}
 header{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:38px}
 .brand{font-weight:1000;letter-spacing:.12em;font-size:clamp(17px,3.8vw,28px);color:var(--gold);text-shadow:2px 2px #a52b4b,4px 4px #11152a,-1px -1px #fff}
 .tag{font-size:9px;letter-spacing:.18em;color:#aeb8e0;font-weight:900}
@@ -55,7 +62,7 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
 .foot{display:flex;justify-content:space-between;gap:8px;color:#7f8bb7;font-size:9px;font-weight:800;letter-spacing:.04em}
 #rotateHint{display:none}
 @media(orientation:portrait) and (max-width:700px){
- #app{width:100vw;height:100dvh;max-height:none;padding:7px 7px max(7px,env(safe-area-inset-bottom));gap:5px}
+ #app{width:100vw;height:100dvh;min-height:100svh;max-height:none;padding:max(5px,env(safe-area-inset-top)) 5px max(5px,env(safe-area-inset-bottom));gap:5px}
  header{min-height:32px;gap:5px}.brand{font-size:18px;letter-spacing:.08em}.tag{font-size:7px;letter-spacing:.1em}#status{font-size:8px}
  #stage{min-height:0;flex:1;border-width:3px}
  #stage:before{font-size:7px;bottom:5px;right:6px}
@@ -450,6 +457,13 @@ function render(){
 }
 function loop(){if(role==='host'){hostUpdate();hostLoop();camera=0}else if(role==='client'&&hostConn&&hostConn.open){const now=performance.now();if(now-lastNet>45){lastNet=now;hostConn.send({type:'input',slot,input:{...input}})}}render();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
+let wakeLock=null;
+async function keepScreenAwake(){
+ try{if('wakeLock' in navigator)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(role==='host'||role==='client'))keepScreenAwake()});
+['hostBtn','connectBtn'].forEach(id=>$(id).addEventListener('click',()=>{keepScreenAwake();if(screen.orientation&&screen.orientation.lock){screen.orientation.lock('landscape').catch(()=>{})}}));
+if('serviceWorker' in navigator && location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 canvas.addEventListener('pointerdown',()=>{if(role==='host'&&gameOver&&stageWon){if(stageIndex===0)beginSubway();else if(stageIndex===1)beginFactory()}});
 window.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&role==='host'&&gameOver&&stageWon){if(stageIndex===0)beginSubway();else if(stageIndex===1)beginFactory()}});
 window.addEventListener('beforeunload',()=>{if(role==='client'&&hostConn&&hostConn.open)hostConn.send({type:'leave',slot})});
