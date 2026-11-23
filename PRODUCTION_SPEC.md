@@ -136,3 +136,15 @@ This specification is the target. Prototype features should be described as impl
 - Added Mall victory messaging and campaign progression from Factory to Mall. The final Headquarters stage is still not implemented.
 - Updated multiplayer snapshots to synchronize the active Mall hazard to joined players.
 - JavaScript syntax validation passed after the update. Gameplay balance, visual rendering, and multiplayer synchronization remain unverified on physical iPhones.
+
+
+## Stage 5 — NEXUS Headquarters finale
+
+- Added the fifth playable campaign chapter, unlocked after defeating The Brand Ambassador in the Mall.
+- Added a dedicated executive tower environment with boardroom windows, security architecture, and NEXUS executive branding.
+- Added three enemy waves featuring executive security guards and hovering security drones.
+- Added an executive security-grid hazard that marks a lane and damages grounded players who remain inside it; jumping avoids the sweep.
+- Added Director Vex as the final boss, with a custom executive armored pixel-art sprite, 92 HP, boss health bar, and CEO label.
+- Added final campaign victory messaging after Vex is defeated. The campaign now has five playable stages.
+- Added host-to-client synchronization for the active HQ security hazard.
+- JavaScript syntax validation passed. Actual combat balance, rendering, and multiplayer behavior still require physical-device testing.
