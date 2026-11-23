@@ -124,3 +124,15 @@ This specification is the target. Prototype features should be described as impl
 - Kept movement mapped to the existing directional input model so host-authoritative movement and multiplayer input snapshots remain compatible.
 - Added pointer capture and cleanup for pointer up/cancel/lost-capture and window blur. JavaScript syntax validation passed.
 - Not yet verified on a physical iPhone: thumb ergonomics, simultaneous joystick-plus-action touches, and behavior across Safari versions still require device testing. If the joystick feels imprecise in play, the next adjustment should be threshold/radius tuning rather than assuming analog movement is better.
+
+
+## Vertical slice expansion — The Mall of Misery
+
+- Added a fourth playable campaign stage, unlocked after defeating HR-9000 in the Factory.
+- Added a dedicated neon-lit NEXUS Mega-Mall environment with storefronts, food-court signage, and mall advertising.
+- Added three Mall enemy waves: mall security troopers, aggressive shopping carts, and promotional mascots.
+- Added the runaway shopping-cart stage hazard, with lane-based targeting, collision damage, and a jump-to-evade window.
+- Added The Brand Ambassador as the fourth boss, with a distinct mascot-style pixel-art design, 68 HP, boss health bar, and customer-experience label.
+- Added Mall victory messaging and campaign progression from Factory to Mall. The final Headquarters stage is still not implemented.
+- Updated multiplayer snapshots to synchronize the active Mall hazard to joined players.
+- JavaScript syntax validation passed after the update. Gameplay balance, visual rendering, and multiplayer synchronization remain unverified on physical iPhones.
