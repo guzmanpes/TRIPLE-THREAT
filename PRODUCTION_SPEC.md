@@ -31,7 +31,9 @@ Each stage includes an introduction, enemy waves, a stage hazard, a boss encount
 
 ## Core gameplay
 - Landscape side-scrolling beat-'em-up with depth-lane movement.
-- Directional movement, jump, punch, kick, and character-specific special.
+- Floating left-side virtual joystick for movement and depth-lane positioning; joystick direction maps to clear digital movement thresholds.
+- Three right-side touch actions: ATTACK (alternating punch/kick combo), JUMP, and character-specific SPECIAL.
+- Multi-touch pointer handling with pointer capture and release cleanup for cancel/lost-capture/blur events; keyboard controls remain available for desktop testing.
 - Individual player health and score contribution; shared team objective.
 - Combo scoring, knockback, hit feedback, temporary pickups.
 - Signature cooperative Triple Threat finisher.
@@ -113,3 +115,12 @@ This specification is the target. Prototype features should be described as impl
 - Added HR-9000 as the Factory boss, with a new chunky pixel-art robot design, a 58 HP boss bar, and a distinct green Human Resources label.
 - Added Factory victory messaging and updated the stage HUD and campaign progression.
 - JavaScript syntax validation passed after the update. The new stage has not been physically tested on iPhones or with three simultaneous devices; the multiplayer stage transition and hazard timing remain to be verified in live play.
+
+
+## Touch control redesign — floating joystick
+
+- Replaced the four-way D-pad with a floating left-side joystick that centers where the player's thumb first touches, then tracks within a bounded radius.
+- Simplified the right-side action cluster to ATTACK, JUMP, and SPECIAL. ATTACK alternates between punch and kick animations to preserve combat variety without a fourth button.
+- Kept movement mapped to the existing directional input model so host-authoritative movement and multiplayer input snapshots remain compatible.
+- Added pointer capture and cleanup for pointer up/cancel/lost-capture and window blur. JavaScript syntax validation passed.
+- Not yet verified on a physical iPhone: thumb ergonomics, simultaneous joystick-plus-action touches, and behavior across Safari versions still require device testing. If the joystick feels imprecise in play, the next adjustment should be threshold/radius tuning rather than assuming analog movement is better.
