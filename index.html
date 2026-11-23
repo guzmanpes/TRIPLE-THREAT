@@ -42,10 +42,14 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
 .hero strong{display:block;font-size:clamp(10px,2vw,14px);letter-spacing:.08em}
 .hero small{display:block;color:#aab6df;font-size:9px;line-height:1.25;margin-top:4px}
 #controls{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:95px;padding:0 3px;user-select:none;-webkit-user-select:none}
-.pad{display:grid;grid-template-columns:clamp(37px,6vw,55px) clamp(37px,6vw,55px) clamp(37px,6vw,55px);grid-template-rows:clamp(34px,5.5vw,48px) clamp(34px,5.5vw,48px);gap:7px}
-.ctrl{background:#2d3a68;color:#fff;border:1px solid #8a9bd1;border-radius:5px;font-size:19px;padding:0;min-height:0;touch-action:none;box-shadow:0 3px 0 #11162e}
-.ctrl:active,.ctrl.down{background:#657ab8;transform:translateY(2px);box-shadow:0 1px 0 #11162e}
-#up{grid-column:2}#left{grid-column:1;grid-row:2}#down{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}
+.pad{position:relative;isolation:isolate;display:grid;grid-template-columns:clamp(37px,6vw,55px) clamp(37px,6vw,55px) clamp(37px,6vw,55px);grid-template-rows:repeat(3,clamp(37px,6vw,55px));gap:0;padding:7px;border:5px solid #c7c9c9;border-radius:25px;background:linear-gradient(145deg,#050609,#171a1e 48%,#020304);box-shadow:0 0 0 3px #656a70,0 5px 0 #08090b,inset 0 0 0 3px #08090b,inset 0 2px 5px #ffffff35}
+.pad .ctrl{position:relative;z-index:1;min-height:0;width:100%;height:100%;padding:0;border:2px solid #080a0d;border-radius:3px;background:linear-gradient(145deg,#30343a,#111419 65%,#292d32);color:#090c11;font-size:clamp(17px,2.4vw,25px);text-shadow:0 1px 1px #9da2a8;touch-action:none;box-shadow:inset 0 2px 3px #ffffff30,inset 0 -3px 4px #000b,0 1px 0 #050608}
+.pad .ctrl:active,.pad .ctrl.down{background:linear-gradient(145deg,#59616a,#252a30);transform:translateY(2px);box-shadow:inset 0 2px 5px #000b}
+#up{grid-column:2;grid-row:1;border-radius:10px 10px 2px 2px}
+#left{grid-column:1;grid-row:2;border-radius:10px 2px 2px 10px}
+#right{grid-column:3;grid-row:2;border-radius:2px 10px 10px 2px}
+#down{grid-column:2;grid-row:3;border-radius:2px 2px 10px 10px}
+.padCenter{grid-column:2;grid-row:2;z-index:2;align-self:center;justify-self:center;width:72%;height:72%;border-radius:50%;background:radial-gradient(circle at 35% 28%,#77818c 0%,#30363e 28%,#090c11 72%);border:2px solid #07090c;box-shadow:inset 0 2px 4px #ffffff55,0 2px 2px #000;pointer-events:none}
 .actionGroup{display:flex;align-items:center;gap:6px}
 .actionBtn{width:clamp(52px,10vw,82px);height:clamp(52px,10vw,82px);border-radius:50%;padding:3px;font-size:clamp(9px,1.8vw,12px);line-height:1.05;color:#15152b}
 #jump{background:var(--blue);box-shadow:0 4px 0 #166a94}
@@ -62,7 +66,7 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
  #hud{inset:5px 6px auto;font-size:10px;gap:4px;flex-wrap:wrap}
  #roomBadge{top:31px;left:6px;font-size:8px}
  #controls{min-height:82px;max-height:88px;gap:5px;padding:0;justify-content:space-between}
- .pad{grid-template-columns:repeat(3,34px);grid-template-rows:31px 31px;gap:7px;flex:0 0 auto}
+ .pad{grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,34px);gap:0;padding:6px;border-width:4px;border-radius:19px;flex:0 0 auto}.pad .ctrl{font-size:17px}
  .ctrl{font-size:16px}
  .actionGroup{gap:3px;flex:1;justify-content:flex-end}
  .actionBtn{width:clamp(43px,12.3vw,52px);height:clamp(43px,12.3vw,52px);font-size:clamp(7px,2.1vw,9px);padding:1px;border-width:1px}
@@ -103,7 +107,7 @@ input{width:100%;padding:12px;border-radius:5px;border:2px solid #7585b5;backgro
 <p class="small" id="menuNote">Choose your hero, then host a room or join a friend. Internet is required for multiplayer.</p>
 </div></div></section>
 <section id="controls">
-<div class="pad"><button class="ctrl" id="up">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="down">▼</button><button class="ctrl" id="right">▶</button></div>
+<div class="pad"><button class="ctrl" id="up" aria-label="Move up">▲</button><button class="ctrl" id="left" aria-label="Move left">◀</button><div class="padCenter" aria-hidden="true"></div><button class="ctrl" id="right" aria-label="Move right">▶</button><button class="ctrl" id="down" aria-label="Move down">▼</button></div>
 <div class="actionGroup"><button id="jump" class="ctrl actionBtn">JUMP</button><button id="kick" class="ctrl actionBtn">KICK</button><button id="special" class="ctrl actionBtn">SPECIAL</button><button id="attack" class="ctrl actionBtn">PUNCH</button></div>
 </section>
 <div class="foot"><span>MOVE · JUMP · PUNCH · KICK · SPECIAL</span><span id="playersLabel">PLAYERS 0/3</span><span>CLASSIC ARCADE</span></div>
