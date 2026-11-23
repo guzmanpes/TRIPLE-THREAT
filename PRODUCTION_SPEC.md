@@ -102,3 +102,14 @@ This specification is the target. Prototype features should be described as impl
 - Added a repeating train hazard with an approach warning, moving train, collision damage, and jump-to-evade behavior.
 - Added Subway clear and campaign-demo-complete states. Stages 3–5 are not implemented yet.
 - JavaScript syntax validation passed. This update has not been tested on physical iPhones or with three simultaneous devices; multiplayer synchronization is implemented in snapshots but remains unverified in live play.
+
+
+## Vertical slice expansion — Factory of Fools
+
+- Added a third playable campaign stage that unlocks after defeating The Conductor. The host taps the game field (or presses Enter) on the Subway clear screen to enter the Factory; the stage change is synchronized through the existing host snapshots.
+- Added a dedicated NEXUS Industries factory environment with industrial framing, overhead machinery, warning lights, conveyor markings, and a hydraulic press.
+- Added three Factory enemy waves, reusing the shared 8-bit NEXUS trooper silhouette with the Factory's toxic-green palette.
+- Added the hydraulic press hazard: a warning phase, timed press-down phase, collision damage to grounded players in the marked zone, and a clear timing cue.
+- Added HR-9000 as the Factory boss, with a new chunky pixel-art robot design, a 58 HP boss bar, and a distinct green Human Resources label.
+- Added Factory victory messaging and updated the stage HUD and campaign progression.
+- JavaScript syntax validation passed after the update. The new stage has not been physically tested on iPhones or with three simultaneous devices; the multiplayer stage transition and hazard timing remain to be verified in live play.
