@@ -211,8 +211,8 @@ function hostUpdate(){
   const h=heroes[p.charId],range=p.special>0?125:p.kick>0?78:58,active=p.special>0||p.kick>0||p.attack>0;
   if(!active)continue;
   const damage=p.special>0?(p.charId==='jack'?7:5):p.kick>0?2:h.damage;
-  for(const e of enemies){if(e.hp>0&&Math.abs(p.x-e.x)<range&&Math.abs(p.lane-e.lane)<.18&&((p.dir>0&&e.x>=p.x-5)||(p.dir<0&&e.x<=p.x+5))&&e.hit===0){e.hp-=damage;e.hit=16;p.score+=100;score+=100;if(e.hp<=0)score+=250;shake=Math.max(shake,2)}}
-  if(boss&&boss.hp>0&&Math.abs(p.x-boss.x)<range+(stageIndex===1?30:18)&&Math.abs(p.lane-boss.lane)<.22&&((p.dir>0&&boss.x>=p.x-5)||(p.dir<0&&boss.x<=p.x+5))&&boss.hit===0){boss.hp-=damage;boss.hit=13;p.score+=150;score+=150;shake=Math.max(shake,3);if(boss.hp<=0){boss.hp=0;stageWon=true;showBanner('BOSS DEFEATED!',stageIndex===0?'THE MANAGER HAS BEEN ESCALATED TO HR.':stageIndex===1?'THE TRAIN IS NOW RUN BY AN INTERN.':stageIndex===2?'HR HAS DENIED YOUR PTO REQUEST.':'THE MALL HAS BEEN RETURNED TO ITS PREVIOUS LEVEL OF CHAOS.',260)}}
+  for(const e of enemies){if(e.hp>0&&Math.abs(p.x-e.x)<range&&Math.abs(p.lane-e.lane)<.18&&((p.dir>0&&e.x>=p.x-5)||(p.dir<0&&e.x<=p.x+5))&&e.hit===0){e.hp-=damage;e.hit=16;e.x=clamp(e.x+p.dir*(p.special>0?30:p.kick>0?20:14),24,W-24);p.score+=100;score+=100;if(e.hp<=0)score+=250;shake=Math.max(shake,p.special>0?7:4)}}
+  if(boss&&boss.hp>0&&Math.abs(p.x-boss.x)<range+(stageIndex===1?30:18)&&Math.abs(p.lane-boss.lane)<.22&&((p.dir>0&&boss.x>=p.x-5)||(p.dir<0&&boss.x<=p.x+5))&&boss.hit===0){boss.hp-=damage;boss.hit=13;boss.x=clamp(boss.x+p.dir*(p.special>0?20:10),70,W-50);p.score+=150;score+=150;shake=Math.max(shake,p.special>0?9:5);if(boss.hp<=0){boss.hp=0;stageWon=true;showBanner('BOSS DEFEATED!',stageIndex===0?'THE MANAGER HAS BEEN ESCALATED TO HR.':stageIndex===1?'THE TRAIN IS NOW RUN BY AN INTERN.':stageIndex===2?'HR HAS DENIED YOUR PTO REQUEST.':'THE MALL HAS BEEN RETURNED TO ITS PREVIOUS LEVEL OF CHAOS.',260)}}
  }
  enemies.forEach(e=>{if(e.hit>0)e.hit--});if(boss&&boss.hit>0)boss.hit--;enemies=enemies.filter(e=>e.hp>0);
  if(enemies.length===0&&!boss&&!stageWon){
