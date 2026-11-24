@@ -175,7 +175,7 @@ function beginHQ(){resetStage(4,'NEXUS HEADQUARTERS','WELCOME TO THE TOP FLOOR. 
 function spawnEnemy(x,kind='patrol',hp=3,lane){enemies.push({kind,x:x===undefined?W+35:x,lane:lane===undefined?.18+Math.random()*.65:lane,hp,maxHp:hp,dir:-1,hit:0,phase:Math.random()*8,attack:0,windup:0,shotCooldown:75+Math.floor(Math.random()*65),charge:0,chargeHit:0})}
 function spawnWave(index){const wave=campaignWaves[stageIndex][index];if(!wave)return;wave.forEach((e,i)=>spawnEnemy(clamp(W*.62+i*58,W*.58,W-52),e.kind,e.hp,e.lane));showBanner('WAVE '+(index+1),'NEXUS HAS FILED A COMPLAINT.',105)}
 
-function spawnManager(){const spec=stageIndex===0?['managerBoss','THE MANAGER',42]:stageIndex===1?['conductorBoss','THE CONDUCTOR',50]:stageIndex===2?['hrBoss','HR-9000',58]:stageIndex===3?['brandBoss','THE BRAND AMBASSADOR',68]:['vexBoss','DIRECTOR VEX',92];boss={kind:spec[0],name:spec[1],x:W*.84,lane:.5,hp:spec[2],maxHp:spec[2],dir:-1,hit:0,windup:0,attack:0,phase:0,patternWindup:0,patternCooldown:105,attackLane:.5,enraged:false};showBanner('BOSS ALERT',stageIndex===0?'PLEASE WELCOME YOUR DIRECT SUPERVISOR.':stageIndex===1?'NEXT STOP: A VERY BAD DAY.':stageIndex===2?'YOUR PERFORMANCE REVIEW IS NOW COMBAT.':stageIndex===3?'THE FACE OF CUSTOMER DISAPPOINTMENT.':'YOUR FINAL PERFORMANCE REVIEW STARTS NOW.',190)}
+function spawnManager(){const spec=stageIndex===0?['managerBoss','THE MANAGER',42]:stageIndex===1?['conductorBoss','THE CONDUCTOR',50]:stageIndex===2?['hrBoss','HR-9000',58]:stageIndex===3?['brandBoss','THE BRAND AMBASSADOR',68]:['vexBoss','DIRECTOR VEX',92];boss={kind:spec[0],name:spec[1],x:W*.84,lane:.5,hp:spec[2],maxHp:spec[2],dir:-1,hit:0,windup:0,attack:0,phase:0,patternWindup:0,patternCooldown:105,attackLane:.5,enraged:false,stagger:0,staggerLock:0,phaseAnnounced:false};showBanner('BOSS ALERT',stageIndex===0?'PLEASE WELCOME YOUR DIRECT SUPERVISOR.':stageIndex===1?'NEXT STOP: A VERY BAD DAY.':stageIndex===2?'YOUR PERFORMANCE REVIEW IS NOW COMBAT.':stageIndex===3?'THE FACE OF CUSTOMER DISAPPOINTMENT.':'YOUR FINAL PERFORMANCE REVIEW STARTS NOW.',190)}
 
 function unlockAudio(){if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtx=new AC()}if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume().catch(()=>{})}
 function playArcadeSound(type){
@@ -196,7 +196,7 @@ function hostUpdate(){
  impacts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life--});impacts=impacts.filter(p=>p.life>0);
  bombs.forEach(b=>{b.x+=b.vx;b.y+=b.vy;b.vy-=.18;b.fuse--;if(b.fuse<=0&&!b.exploded){b.exploded=true;b.life=10;spawnImpact(b.x,b.lane,true);emitSound('bomb');shake=Math.max(shake,9);
   enemies.forEach(e=>{if(e.hp>0&&Math.abs(e.x-b.x)<92&&Math.abs(e.lane-b.lane)<.24&&e.hit===0){e.hp-=4;e.hit=18;e.x=clamp(e.x+(e.x>=b.x?1:-1)*28,24,W-24);spawnImpact(e.x,e.lane,true);score+=250}});
-  if(boss&&boss.hp>0&&Math.abs(boss.x-b.x)<110&&Math.abs(boss.lane-b.lane)<.28&&boss.hit===0){boss.hp-=4;boss.hit=18;spawnImpact(boss.x,boss.lane,true);score+=350}
+  if(boss&&boss.hp>0&&Math.abs(boss.x-b.x)<110&&Math.abs(boss.lane-b.lane)<.28&&boss.hit===0){boss.hp-=4;boss.hit=18;boss.stagger=30;boss.staggerLock=150;boss.patternWindup=0;spawnImpact(boss.x,boss.lane,true);spawnImpact(boss.x-18,boss.lane,true);score+=350;showBanner('DIRECT HIT!','NEXUS MANAGEMENT HAS LOST ITS TRAIN OF THOUGHT.',42)}
  }else if(b.exploded)b.life--});bombs=bombs.filter(b=>!b.exploded||b.life>0);
  if(stageIndex===4){hqHazard.timer--;if(hqHazard.timer<=0&&!hqHazard.active){hqHazard.active=true;hqHazard.phase=0;hqHazard.lane=[.28,.5,.72][Math.floor(frame/210)%3];showBanner('EXECUTIVE SECURITY GRID!','MOVE OUT OF THE RED LANE. THIS IS A HOSTILE WORKPLACE.',75)}if(hqHazard.active){hqHazard.phase++;if(hqHazard.phase>105){hqHazard.active=false;hqHazard.timer=250}players.forEach(p=>{if(p.active&&Math.abs(p.lane-hqHazard.lane)<.105&&p.y<18&&p.inv<=0){p.hp--;p.inv=95;shake=12;if(p.hp<=0)p.active=false}})}}
  if(stageIndex===3){mallHazard.timer--;if(mallHazard.timer<=0&&!mallHazard.active){mallHazard.active=true;mallHazard.x=-90;mallHazard.lane=[.3,.5,.7][Math.floor(frame/260)%3];showBanner('RUNAWAY SHOPPING CART!','THIS IS WHY WE HAVE A CUSTOMER SERVICE DESK.',75)}if(mallHazard.active){mallHazard.x+=8;players.forEach(p=>{if(p.active&&Math.abs(p.x-mallHazard.x)<46&&Math.abs(p.lane-mallHazard.lane)<.16&&p.y<18&&p.inv<=0){p.hp--;p.inv=90;shake=11;if(p.hp<=0)p.active=false}});if(mallHazard.x>W+100){mallHazard.active=false;mallHazard.timer=340}}}
@@ -234,7 +234,9 @@ function hostUpdate(){
   if(target){
    boss.dir=target.x<boss.x?-1:1;
    boss.enraged=boss.hp<=boss.maxHp*.5;
-   if(boss.patternCooldown>0)boss.patternCooldown--;
+   if(boss.stagger>0)boss.stagger--;if(boss.staggerLock>0)boss.staggerLock--;
+   if(boss.enraged&&!boss.phaseAnnounced){boss.phaseAnnounced=true;showBanner('BOSS ENRAGED!','NEXUS HAS AUTHORIZED EXTREME MEASURES.',105);shake=Math.max(shake,10)}
+   if(boss.stagger>0){boss.patternWindup=0;boss.patternCooldown=Math.max(boss.patternCooldown,35)}else if(boss.patternCooldown>0)boss.patternCooldown--;
    if(boss.patternWindup>0){
     boss.patternWindup--;
     if(boss.patternWindup===1){
@@ -259,7 +261,7 @@ function hostUpdate(){
     boss.attackLane=target.lane;
     boss.patternWindup=boss.kind==='hrBoss'?48:boss.kind==='conductorBoss'?42:boss.kind==='vexBoss'?35:40;
    }
-   if(boss.windup>0){boss.windup--;if(boss.windup===1){boss.attack=18;boss.phase++}}
+   if(boss.stagger>0){boss.windup=0;boss.attack=0;}else if(boss.windup>0){boss.windup--;if(boss.windup===1){boss.attack=18;boss.phase++}}
    else if(boss.attack>0){boss.attack--;if(boss.attack===9&&Math.abs(target.x-boss.x)<112&&Math.abs(target.lane-boss.lane)<.2&&target.inv<=0){target.hp--;target.inv=90;shake=10;if(target.hp<=0)target.active=false}}
    else {if(Math.abs(target.x-boss.x)>115)boss.x+=boss.dir*(boss.enraged?1.0:.72);boss.lane+=clamp(target.lane-boss.lane,-.005,.005);if(Math.abs(target.x-boss.x)<(stageIndex===1?178:stageIndex===2?190:stageIndex===3?205:150)&&frame%3===0)boss.windup=stageIndex===1?30:stageIndex===2?26:stageIndex===3?24:38}
   }
@@ -270,7 +272,7 @@ function hostUpdate(){
   if(!active)continue;
   const damage=p.special>0?(p.charId==='jack'?7:5):p.kick>0?2:h.damage;
   for(const e of enemies){if(e.hp>0&&Math.abs(p.x-e.x)<range&&Math.abs(p.lane-e.lane)<.18&&((p.dir>0&&e.x>=p.x-5)||(p.dir<0&&e.x<=p.x+5))&&e.hit===0){e.hp-=damage;e.hit=16;e.x=clamp(e.x+p.dir*(p.special>0?30:p.kick>0?20:14),24,W-24);spawnImpact(e.x,e.lane,p.special>0||e.hp<=0);emitSound(p.special>0?'heavy':'punch');p.score+=100;score+=100;if(e.hp<=0)score+=250;shake=Math.max(shake,p.special>0?7:4)}}
-  if(boss&&boss.hp>0&&Math.abs(p.x-boss.x)<range+(stageIndex===1?30:18)&&Math.abs(p.lane-boss.lane)<.22&&((p.dir>0&&boss.x>=p.x-5)||(p.dir<0&&boss.x<=p.x+5))&&boss.hit===0){boss.hp-=damage;boss.hit=13;boss.x=clamp(boss.x+p.dir*(p.special>0?20:10),70,W-50);spawnImpact(boss.x,boss.lane,true);emitSound('boss');p.score+=150;score+=150;shake=Math.max(shake,p.special>0?9:5);if(boss.hp<=0){boss.hp=0;stageWon=true;showBanner('BOSS DEFEATED!',stageIndex===0?'THE MANAGER HAS BEEN ESCALATED TO HR.':stageIndex===1?'THE TRAIN IS NOW RUN BY AN INTERN.':stageIndex===2?'HR HAS DENIED YOUR PTO REQUEST.':'THE MALL HAS BEEN RETURNED TO ITS PREVIOUS LEVEL OF CHAOS.',260)}}
+  if(boss&&boss.hp>0&&Math.abs(p.x-boss.x)<range+(stageIndex===1?30:18)&&Math.abs(p.lane-boss.lane)<.22&&((p.dir>0&&boss.x>=p.x-5)||(p.dir<0&&boss.x<=p.x+5))&&boss.hit===0){boss.hp-=damage;boss.hit=13;if((p.special>0||p.kick>0)&&boss.staggerLock<=0){boss.stagger=24;boss.staggerLock=150;boss.patternWindup=0;boss.windup=0;boss.attack=0;spawnImpact(boss.x-12,boss.lane,true)}boss.x=clamp(boss.x+p.dir*(p.special>0?20:10),70,W-50);spawnImpact(boss.x,boss.lane,true);emitSound('boss');p.score+=150;score+=150;shake=Math.max(shake,p.special>0?9:5);if(boss.hp<=0){boss.hp=0;stageWon=true;showBanner('BOSS DEFEATED!',stageIndex===0?'THE MANAGER HAS BEEN ESCALATED TO HR.':stageIndex===1?'THE TRAIN IS NOW RUN BY AN INTERN.':stageIndex===2?'HR HAS DENIED YOUR PTO REQUEST.':'THE MALL HAS BEEN RETURNED TO ITS PREVIOUS LEVEL OF CHAOS.',260)}}
  }
  enemies.forEach(e=>{if(e.hit>0)e.hit--});if(boss&&boss.hit>0)boss.hit--;enemies=enemies.filter(e=>e.hp>0);
  if(enemies.length===0&&!boss&&!stageWon){
@@ -490,7 +492,7 @@ function drawEnemy(e){
  ctx.restore();
 }
 function drawBoss(){
- if(!boss||boss.hp<=0)return;const x=Math.round(boss.x-camera),y=Math.round(H*(.78-(boss.lane-.5)*.24));ctx.save();ctx.translate(x,y);ctx.fillStyle='#080b1aaa';ctx.beginPath();ctx.ellipse(0,6,boss.kind==='conductorBoss'?48:43,10,0,0,Math.PI*2);ctx.fill();const r=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)};const flash=boss.hit>0&&Math.floor(frame/2)%2===0;
+ if(!boss||boss.hp<=0)return;const x=Math.round(boss.x-camera),y=Math.round(H*(.78-(boss.lane-.5)*.24));ctx.save();if(boss.stagger>0&&Math.floor(frame/2)%2===0)ctx.globalAlpha=.55;ctx.translate(x+(boss.stagger>0?Math.sin(frame*1.8)*4:0),y);ctx.fillStyle='#080b1aaa';ctx.beginPath();ctx.ellipse(0,6,boss.kind==='conductorBoss'?48:43,10,0,0,Math.PI*2);ctx.fill();const r=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)};const flash=boss.hit>0&&Math.floor(frame/2)%2===0;
  if(boss.kind==='vexBoss'){r(-58,-117,116,88,'#101728');r(-51,-112,102,80,flash?'#fff':'#33415e');r(-42,-105,84,67,'#536681');r(-43,-161,86,49,'#11182b');r(-37,-155,74,39,'#d8d9d0');r(-29,-148,58,24,'#26344c');r(-20,-143,12,8,'#ff405d');r(8,-143,12,8,'#ff405d');r(-15,-128,30,4,'#1c2538');r(-34,-111,68,9,'#f2c85c');r(-12,-99,24,26,'#17243b');r(-7,-94,14,15,'#e9c65c');r(-53,-91,18,35,'#26344c');r(35,-91,18,35,'#26344c');r(-58,-60,22,17,'#101728');r(36,-60,22,17,'#101728');r(-39,-29,30,27,'#19243a');r(9,-29,30,27,'#19243a');r(-44,-7,38,7,'#080e1a');r(6,-7,38,7,'#080e1a');if(boss.windup>0){r(40,-105,22,9,'#ff526c');r(49,-110,8,5,'#fff')}}else if(boss.kind==='brandBoss'){
   r(-48,-111,96,82,'#21152f');r(-42,-107,84,75,flash?'#fff':'#c64e79');r(-33,-99,66,58,'#f18aa6');
   r(-40,-150,80,49,'#21152f');r(-34,-145,68,39,'#f4c95d');r(-26,-137,52,27,'#fff0d6');
@@ -509,7 +511,7 @@ function drawBoss(){
   r(-8,-78,16,25,'#17251c');r(-5,-73,10,15,'#c3dc4c');r(-3,-70,6,5,'#ff4059');
  }else if(boss.kind==='conductorBoss'){r(-38,-105,76,76,'#151b30');r(-32,-102,64,70,flash?'#fff':'#263f68');r(-26,-98,52,63,'#315b83');r(-24,-139,48,39,'#171a2e');r(-20,-137,40,34,'#dcae8c');r(-27,-147,54,12,'#18233e');r(-22,-141,44,7,'#d3a94f');r(-8,-147,16,5,'#f4d26d');r(-13,-126,7,5,'#fff4d8');r(7,-126,7,5,'#fff4d8');r(-11,-125,3,4,'#1e263e');r(9,-125,3,4,'#1e263e');r(-5,-115,11,3,'#71394a');r(-6,-101,12,35,'#e5c56c');r(-3,-101,6,25,'#fff0b2');for(let yy=-84;yy<-53;yy+=11)r(-19,yy,4,4,'#f7d76d');r(-31,-88,10,28,'#24304d');r(21,-88,10,28,'#24304d');r(-31,-30,23,26,'#18233d');r(8,-30,23,26,'#18233d');r(-36,-7,29,6,'#0d1429');r(7,-7,29,6,'#0d1429');r(29,-95,8,39,'#7b4b32');r(27,-101,12,9,'#f5d06c');r(30,-93,6,7,'#fff1a7')}
  else{r(-34,-103,68,72,'#17182f');r(-29,-101,58,67,flash?'#fff':'#37456f');r(-24,-98,48,60,'#53658f');r(-24,-139,48,39,'#18192f');r(-20,-137,40,34,'#e8b991');r(-25,-143,50,11,'#24223a');r(-21,-132,42,5,'#b98a6c');r(-13,-126,7,5,'#fff6dc');r(7,-126,7,5,'#fff6dc');r(-11,-125,3,4,'#27243a');r(9,-125,3,4,'#27243a');r(-5,-115,11,3,'#823b53');r(-6,-102,12,34,'#d13b5c');r(-3,-102,6,26,'#f1d8c4');r(-29,-89,10,28,'#26304e');r(19,-89,10,28,'#26304e');r(-28,-31,22,27,'#20243f');r(6,-31,22,27,'#20243f');r(-33,-7,28,6,'#11162b');r(5,-7,28,6,'#11162b');r(-39,-91,12,29,'#e2b78f');r(27,-91,12,29,'#e2b78f');r(27,-102,17,12,'#ffdc68');r(30,-99,11,5,'#fff3b5')}
- if(boss.windup>0||boss.patternWindup>0){ctx.strokeStyle='#ff536d';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-72,54+Math.sin(frame*.8)*5,0,Math.PI*2);ctx.stroke();r(-48,-151,96,5,'#ff536d')}ctx.restore();
+ if(boss.stagger>0){ctx.translate(Math.sin(frame*1.7)*5,0);r(-62,-166,124,6,'#fff');r(-54,-157,108,4,'#ffd34e')}if(boss.windup>0||boss.patternWindup>0){ctx.strokeStyle='#ff536d';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-72,54+Math.sin(frame*.8)*5,0,Math.PI*2);ctx.stroke();r(-48,-151,96,5,'#ff536d')}ctx.restore();
  const bw=Math.min(W*.48,360),bx=(W-bw)/2,by=48;ctx.fillStyle='#10152d';ctx.fillRect(bx-3,by-3,bw+6,16);ctx.strokeStyle='#f4d36b';ctx.lineWidth=2;ctx.strokeRect(bx-3,by-3,bw+6,16);ctx.fillStyle='#3a1d3d';ctx.fillRect(bx,by,bw,10);ctx.fillStyle=boss.kind==='conductorBoss'?'#e5c35d':boss.kind==='hrBoss'?'#a9e34b':boss.kind==='vexBoss'?'#e9c65c':'#ff536b';ctx.fillRect(bx+2,by+2,(bw-4)*Math.max(0,boss.hp/boss.maxHp),6);ctx.fillStyle='#fff';ctx.font='900 11px monospace';ctx.textAlign='center';ctx.fillText(boss.name+(boss.kind==='conductorBoss'?'  ·  TRANSIT AUTHORITY':boss.kind==='hrBoss'?'  ·  HUMAN RESOURCES':boss.kind==='brandBoss'?'  ·  CUSTOMER EXPERIENCE':boss.kind==='vexBoss'?'  ·  CHIEF EXECUTIVE OFFICER':'  ·  MIDDLE MANAGEMENT'),W/2,by-7);
 }
 
