@@ -139,7 +139,8 @@ function makePlayer(id,charId,x){const h=heroes[charId]||heroes.jack;return{id,c
 function worldW(){return W}
 function spawnImpact(x,lane,big=false){const y=H*(.78-(lane-.5)*.24)-48,n=big?12:8,colors=big?['#fff','#ffd34e','#ff8a4c','#f7f35b']:['#fff','#ffd34e','#ffad55'];for(let i=0;i<n;i++){const a=Math.PI*2*i/n,speed=big?2.5+(i%3):1.8+(i%3)*.55;impacts.push({x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed-1.2,life:big?19:14,color:colors[i%colors.length],size:big?5:4})}}
 function drawBombs(){bombs.forEach(b=>{const x=Math.round(b.x-camera),y=Math.round(H*(.78-(b.lane-.5)*.24)-b.y-8);ctx.fillStyle='#171a2c';ctx.fillRect(x-7,y-6,15,14);ctx.fillStyle='#30384e';ctx.fillRect(x-5,y-4,11,10);ctx.fillStyle='#ffad35';ctx.fillRect(x+2,y-10,4,5);if(Math.floor(frame/3)%2===0){ctx.fillStyle='#fff27a';ctx.fillRect(x+4,y-15,4,5)}})}
-function drawHostileShots(){hostileShots.forEach(q=>{const x=Math.round(q.x-camera),y=Math.round(H*(.78-(q.lane-.5)*.24)-q.y-24);ctx.fillStyle='#ff526d';ctx.fillRect(x-7,y-5,14,10);ctx.fillStyle='#fff1a6';ctx.fillRect(x-3,y-3,6,6)})}
+function drawHostileShots(){hostileShots.forEach(q=>{const x=Math.round(q.x-camera),y=Math.round(H*(.78-(q.lane-.5)*.24)-q.y-24);ctx.fillStyle=q.type==='memo'?'#f5d36b':q.type==='rail'?'#6bdce8':q.type==='cart'?'#ff8b9f':q.type==='vex'?'#c18aff':'#ff526d';ctx.fillRect(x-(q.type==='rail'?11:7),y-(q.type==='rail'?7:5),q.type==='rail'?22:14,q.type==='rail'?14:10);ctx.fillStyle='#fff1a6';ctx.fillRect(x-3,y-3,6,6)})}
+function drawBossTelegraph(){if(!boss||boss.hp<=0)return;const y=H*(.78-(boss.attackLane-.5)*.24);if(boss.kind==='hrBoss'&&boss.patternWindup>0){ctx.fillStyle='#ff3e5d';ctx.globalAlpha=.18+.1*Math.sin(frame*.7);ctx.fillRect(0,y-31,W,62);ctx.globalAlpha=1;ctx.fillStyle='#fff';ctx.font='900 10px monospace';ctx.textAlign='center';ctx.fillText('MANDATORY PERFORMANCE REVIEW — MOVE LANES OR JUMP',W/2,y-38)}else if(boss.patternWindup>0){ctx.fillStyle='#ff526d';ctx.fillRect(boss.x-34-camera,y-115,68,5);ctx.fillStyle='#fff';ctx.fillRect(boss.x-3-camera,y-120,6,5)}}
 function drawImpacts(){impacts.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/(p.size>4?19:14));ctx.fillStyle=p.color;ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size,p.size)});ctx.globalAlpha=1}
 const downtownWaves=[
  [{kind:'patrol',hp:3,lane:.3},{kind:'patrol',hp:3,lane:.68},{kind:'ticket',hp:2,lane:.5},{kind:'charger',hp:4,lane:.82}],
@@ -174,7 +175,7 @@ function beginHQ(){resetStage(4,'NEXUS HEADQUARTERS','WELCOME TO THE TOP FLOOR. 
 function spawnEnemy(x,kind='patrol',hp=3,lane){enemies.push({kind,x:x===undefined?W+35:x,lane:lane===undefined?.18+Math.random()*.65:lane,hp,maxHp:hp,dir:-1,hit:0,phase:Math.random()*8,attack:0,windup:0,shotCooldown:75+Math.floor(Math.random()*65),charge:0,chargeHit:0})}
 function spawnWave(index){const wave=campaignWaves[stageIndex][index];if(!wave)return;wave.forEach((e,i)=>spawnEnemy(clamp(W*.62+i*58,W*.58,W-52),e.kind,e.hp,e.lane));showBanner('WAVE '+(index+1),'NEXUS HAS FILED A COMPLAINT.',105)}
 
-function spawnManager(){const spec=stageIndex===0?['managerBoss','THE MANAGER',42]:stageIndex===1?['conductorBoss','THE CONDUCTOR',50]:stageIndex===2?['hrBoss','HR-9000',58]:stageIndex===3?['brandBoss','THE BRAND AMBASSADOR',68]:['vexBoss','DIRECTOR VEX',92];boss={kind:spec[0],name:spec[1],x:W*.84,lane:.5,hp:spec[2],maxHp:spec[2],dir:-1,hit:0,windup:0,attack:0,phase:0};showBanner('BOSS ALERT',stageIndex===0?'PLEASE WELCOME YOUR DIRECT SUPERVISOR.':stageIndex===1?'NEXT STOP: A VERY BAD DAY.':stageIndex===2?'YOUR PERFORMANCE REVIEW IS NOW COMBAT.':stageIndex===3?'THE FACE OF CUSTOMER DISAPPOINTMENT.':'YOUR FINAL PERFORMANCE REVIEW STARTS NOW.',190)}
+function spawnManager(){const spec=stageIndex===0?['managerBoss','THE MANAGER',42]:stageIndex===1?['conductorBoss','THE CONDUCTOR',50]:stageIndex===2?['hrBoss','HR-9000',58]:stageIndex===3?['brandBoss','THE BRAND AMBASSADOR',68]:['vexBoss','DIRECTOR VEX',92];boss={kind:spec[0],name:spec[1],x:W*.84,lane:.5,hp:spec[2],maxHp:spec[2],dir:-1,hit:0,windup:0,attack:0,phase:0,patternWindup:0,patternCooldown:105,attackLane:.5,enraged:false};showBanner('BOSS ALERT',stageIndex===0?'PLEASE WELCOME YOUR DIRECT SUPERVISOR.':stageIndex===1?'NEXT STOP: A VERY BAD DAY.':stageIndex===2?'YOUR PERFORMANCE REVIEW IS NOW COMBAT.':stageIndex===3?'THE FACE OF CUSTOMER DISAPPOINTMENT.':'YOUR FINAL PERFORMANCE REVIEW STARTS NOW.',190)}
 
 function unlockAudio(){if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtx=new AC()}if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume().catch(()=>{})}
 function playArcadeSound(type){
@@ -232,9 +233,35 @@ function hostUpdate(){
   const target=activePlayers.slice().sort((a,b)=>Math.abs(a.x-boss.x)-Math.abs(b.x-boss.x))[0];
   if(target){
    boss.dir=target.x<boss.x?-1:1;
+   boss.enraged=boss.hp<=boss.maxHp*.5;
+   if(boss.patternCooldown>0)boss.patternCooldown--;
+   if(boss.patternWindup>0){
+    boss.patternWindup--;
+    if(boss.patternWindup===1){
+     const lane=boss.attackLane,dir=boss.dir,speed=boss.enraged?5.1:4.2;
+     if(boss.kind==='hrBoss'){
+      players.forEach(p=>{if(p.active&&Math.abs(p.lane-lane)<.14&&Math.abs(p.x-boss.x)<210&&p.y<18&&p.inv<=0){p.hp--;p.inv=95;shake=12;if(p.hp<=0)p.active=false}});
+      spawnImpact(boss.x,lane,true);emitSound('heavy');
+     }else if(boss.kind==='managerBoss'){
+      hostileShots.push({x:boss.x+dir*45,y:30,lane,vx:dir*speed,life:145,type:'memo'});
+     }else if(boss.kind==='conductorBoss'){
+      [-.13,0,.13].forEach(off=>hostileShots.push({x:boss.x+dir*45,y:30,lane:clamp(lane+off,.12,.88),vx:dir*(speed+.5),life:145,type:'rail'}));
+     }else if(boss.kind==='brandBoss'){
+      [-.09,.09].forEach(off=>hostileShots.push({x:boss.x+dir*45,y:30,lane:clamp(lane+off,.12,.88),vx:dir*(speed+.3),life:145,type:'cart'}));
+     }else{
+      [-.18,0,.18].forEach(off=>hostileShots.push({x:boss.x+dir*45,y:30,lane:clamp(lane+off,.12,.88),vx:dir*(speed+.6),life:145,type:'vex'}));
+     }
+     boss.phase++;
+     boss.patternCooldown=boss.enraged?92:145;
+     emitSound('boss');
+    }
+   }else if(boss.patternCooldown<=0){
+    boss.attackLane=target.lane;
+    boss.patternWindup=boss.kind==='hrBoss'?48:boss.kind==='conductorBoss'?42:boss.kind==='vexBoss'?35:40;
+   }
    if(boss.windup>0){boss.windup--;if(boss.windup===1){boss.attack=18;boss.phase++}}
    else if(boss.attack>0){boss.attack--;if(boss.attack===9&&Math.abs(target.x-boss.x)<112&&Math.abs(target.lane-boss.lane)<.2&&target.inv<=0){target.hp--;target.inv=90;shake=10;if(target.hp<=0)target.active=false}}
-   else {if(Math.abs(target.x-boss.x)>115)boss.x+=boss.dir*.72;boss.lane+=clamp(target.lane-boss.lane,-.005,.005);if(Math.abs(target.x-boss.x)<(stageIndex===1?178:stageIndex===2?190:stageIndex===3?205:150)&&frame%3===0)boss.windup=stageIndex===1?30:stageIndex===2?26:stageIndex===3?24:38}
+   else {if(Math.abs(target.x-boss.x)>115)boss.x+=boss.dir*(boss.enraged?1.0:.72);boss.lane+=clamp(target.lane-boss.lane,-.005,.005);if(Math.abs(target.x-boss.x)<(stageIndex===1?178:stageIndex===2?190:stageIndex===3?205:150)&&frame%3===0)boss.windup=stageIndex===1?30:stageIndex===2?26:stageIndex===3?24:38}
   }
  }
  for(const p of players){
@@ -482,7 +509,7 @@ function drawBoss(){
   r(-8,-78,16,25,'#17251c');r(-5,-73,10,15,'#c3dc4c');r(-3,-70,6,5,'#ff4059');
  }else if(boss.kind==='conductorBoss'){r(-38,-105,76,76,'#151b30');r(-32,-102,64,70,flash?'#fff':'#263f68');r(-26,-98,52,63,'#315b83');r(-24,-139,48,39,'#171a2e');r(-20,-137,40,34,'#dcae8c');r(-27,-147,54,12,'#18233e');r(-22,-141,44,7,'#d3a94f');r(-8,-147,16,5,'#f4d26d');r(-13,-126,7,5,'#fff4d8');r(7,-126,7,5,'#fff4d8');r(-11,-125,3,4,'#1e263e');r(9,-125,3,4,'#1e263e');r(-5,-115,11,3,'#71394a');r(-6,-101,12,35,'#e5c56c');r(-3,-101,6,25,'#fff0b2');for(let yy=-84;yy<-53;yy+=11)r(-19,yy,4,4,'#f7d76d');r(-31,-88,10,28,'#24304d');r(21,-88,10,28,'#24304d');r(-31,-30,23,26,'#18233d');r(8,-30,23,26,'#18233d');r(-36,-7,29,6,'#0d1429');r(7,-7,29,6,'#0d1429');r(29,-95,8,39,'#7b4b32');r(27,-101,12,9,'#f5d06c');r(30,-93,6,7,'#fff1a7')}
  else{r(-34,-103,68,72,'#17182f');r(-29,-101,58,67,flash?'#fff':'#37456f');r(-24,-98,48,60,'#53658f');r(-24,-139,48,39,'#18192f');r(-20,-137,40,34,'#e8b991');r(-25,-143,50,11,'#24223a');r(-21,-132,42,5,'#b98a6c');r(-13,-126,7,5,'#fff6dc');r(7,-126,7,5,'#fff6dc');r(-11,-125,3,4,'#27243a');r(9,-125,3,4,'#27243a');r(-5,-115,11,3,'#823b53');r(-6,-102,12,34,'#d13b5c');r(-3,-102,6,26,'#f1d8c4');r(-29,-89,10,28,'#26304e');r(19,-89,10,28,'#26304e');r(-28,-31,22,27,'#20243f');r(6,-31,22,27,'#20243f');r(-33,-7,28,6,'#11162b');r(5,-7,28,6,'#11162b');r(-39,-91,12,29,'#e2b78f');r(27,-91,12,29,'#e2b78f');r(27,-102,17,12,'#ffdc68');r(30,-99,11,5,'#fff3b5')}
- if(boss.windup>0){ctx.strokeStyle='#ff536d';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-72,54+Math.sin(frame*.8)*5,0,Math.PI*2);ctx.stroke();r(-48,-151,96,5,'#ff536d')}ctx.restore();
+ if(boss.windup>0||boss.patternWindup>0){ctx.strokeStyle='#ff536d';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-72,54+Math.sin(frame*.8)*5,0,Math.PI*2);ctx.stroke();r(-48,-151,96,5,'#ff536d')}ctx.restore();
  const bw=Math.min(W*.48,360),bx=(W-bw)/2,by=48;ctx.fillStyle='#10152d';ctx.fillRect(bx-3,by-3,bw+6,16);ctx.strokeStyle='#f4d36b';ctx.lineWidth=2;ctx.strokeRect(bx-3,by-3,bw+6,16);ctx.fillStyle='#3a1d3d';ctx.fillRect(bx,by,bw,10);ctx.fillStyle=boss.kind==='conductorBoss'?'#e5c35d':boss.kind==='hrBoss'?'#a9e34b':boss.kind==='vexBoss'?'#e9c65c':'#ff536b';ctx.fillRect(bx+2,by+2,(bw-4)*Math.max(0,boss.hp/boss.maxHp),6);ctx.fillStyle='#fff';ctx.font='900 11px monospace';ctx.textAlign='center';ctx.fillText(boss.name+(boss.kind==='conductorBoss'?'  ·  TRANSIT AUTHORITY':boss.kind==='hrBoss'?'  ·  HUMAN RESOURCES':boss.kind==='brandBoss'?'  ·  CUSTOMER EXPERIENCE':boss.kind==='vexBoss'?'  ·  CHIEF EXECUTIVE OFFICER':'  ·  MIDDLE MANAGEMENT'),W/2,by-7);
 }
 
@@ -526,7 +553,7 @@ function drawTrain(){if(stageIndex!==1||!train)return;if(train.warning){ctx.fill
 
 function render(){
  ctx.clearRect(0,0,W,H);ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake--}
- drawBackground();drawTrain();drawFactoryHazard();drawMallHazard();drawHQHazard();players.slice().sort((a,b)=>a.lane-b.lane).forEach(drawPixelHero);enemies.forEach(e=>{if(e.hp>0)drawEnemy(e)});drawBoss();drawBombs();drawHostileShots();drawImpacts();ctx.restore();
+ drawBackground();drawTrain();drawFactoryHazard();drawMallHazard();drawHQHazard();drawBossTelegraph();players.slice().sort((a,b)=>a.lane-b.lane).forEach(drawPixelHero);enemies.forEach(e=>{if(e.hp>0)drawEnemy(e)});drawBoss();drawBombs();drawHostileShots();drawImpacts();ctx.restore();
  $('score').textContent=(stageIndex===1?'SUBWAY  ·  ':stageIndex===2?'FACTORY  ·  ':stageIndex===3?'MALL  ·  ':stageIndex===4?'HQ  ·  ':'DOWNTOWN  ·  ')+'SCORE '+String(score).padStart(6,'0');$('lives').textContent=players.map(p=>(heroes[p.charId]?.name||'PLAYER')+' '+(p.active?'♥'.repeat(Math.max(0,p.hp)):'✖')).join('  ');
  if(bannerTimer>0&&banner){const parts=banner.split('|');ctx.fillStyle='#10162de8';ctx.fillRect(0,H*.19,W,H*.17);ctx.textAlign='center';ctx.fillStyle='#ffd34e';ctx.font='1000 '+Math.max(17,Math.min(30,W*.045))+'px monospace';ctx.fillText(parts[0],W/2,H*.255);ctx.fillStyle='#fff';ctx.font='900 '+Math.max(9,Math.min(13,W*.018))+'px monospace';ctx.fillText(parts[1]||'',W/2,H*.31)}
  if(gameOver){ctx.fillStyle='#080b1ddd';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle=stageWon?'#79f2a7':'#ffd34e';ctx.font='1000 '+Math.max(25,W*.055)+'px monospace';ctx.fillText(stageWon?(stageIndex===0?'DOWNTOWN SAVED!':stageIndex===1?'SUBWAY CLEARED!':stageIndex===2?'FACTORY SHUT DOWN!':stageIndex===3?'MALL LIBERATED!':'NEXUS DEFEATED!'):'GAME OVER',W/2,H/2-18);ctx.fillStyle='#fff';ctx.font='900 13px monospace';ctx.fillText(stageWon?(stageIndex===0?'THE CITY IS STILL A MESS.':stageIndex===1?'THE TRANSIT AUTHORITY HAS BEEN REPORTED TO HR.':stageIndex===2?'THE ROBOTS HAVE FILED A UNION GRIEVANCE.':stageIndex===3?'THE MALL IS CLOSED. FINALLY.':'THE CITY IS YOURS AGAIN. VEX HAS BEEN UNPLUGGED.'):'THE NEXUS HR DEPARTMENT WINS THIS ROUND.',W/2,H/2+10);ctx.fillStyle=stageWon?'#ffd34e':'#fff';ctx.fillText(stageWon?(stageIndex===0?'TAP THE GAME TO BOARD THE TRAIN':stageIndex===1?'TAP TO ENTER THE FACTORY':stageIndex===2?'TAP TO ENTER THE MALL':stageIndex===3?'TAP TO ENTER NEXUS HQ':'CAMPAIGN COMPLETE  ·  YOU ARE THE TRIPLE THREAT'):'REFRESH TO PLAY AGAIN',W/2,H/2+38)}
